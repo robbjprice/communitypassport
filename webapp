@@ -1,0 +1,377 @@
+import React, { useMemo, useState } from "react";
+
+const campaign = {
+  title: "Social Sundays",
+  community: "Marda Loop",
+  subtitle: "Collect digital stamps from participating businesses and unlock prize entries.",
+  dates: "June 2026",
+  domain: "socialsundays.visitmardaloop.com",
+};
+
+const LOOP_SOCIAL_LOGO = "data:image/jpeg;base64,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";
+
+function Logo({ className = "h-16 w-auto" }) {
+  return <img src={LOOP_SOCIAL_LOGO} alt="The Loop Social" className={`${className} object-contain mix-blend-multiply`} />;
+}
+
+const businessDirectory = [
+  { id: "agents-who-care", name: "Agents Who Care Realty Group", type: "Professional Services", address: "113, 2215 33 Avenue SW", lat: 51.0241, lng: -114.1154 },
+  { id: "aisthetikos", name: "Aisthetikos Wellness & Advanced Medical Aesthetics", type: "Aesthetics", address: "2040 34 Avenue SW Suite 201", lat: 51.0231, lng: -114.1102 },
+  { id: "al-fraches", name: "Al Frache's Flowers", type: "Flowers", address: "3505 18 Street SW", lat: 51.0222, lng: -114.1057 },
+  { id: "allure", name: "Allure Hair Studio", type: "Salon", address: "2026 34 Avenue SW", lat: 51.0231, lng: -114.1096 },
+  { id: "alta-physio", name: "Alta Physiotherapy", type: "Health & Wellness", address: "1747 34 Avenue SW", lat: 51.0232, lng: -114.1048 },
+  { id: "altadore-dental", name: "Altadore Dental", type: "Dentistry", address: "3527 18 Street SW Unit #101", lat: 51.0217, lng: -114.1057 },
+  { id: "altadore-law", name: "Altadore Law", type: "Professional Services", address: "1915 34th Avenue SW", lat: 51.0231, lng: -114.1076 },
+  { id: "annabelles", name: "Annabelle's Kitchen", type: "Restaurant", address: "3574 Garrison Gate SW", lat: 51.0202, lng: -114.1216 },
+  { id: "apparition", name: "Apparition Tattoo", type: "Tattoo", address: "2135A 33rd Ave SW", lat: 51.0243, lng: -114.1136 },
+  { id: "aroma", name: "Aroma Cafe Bar", type: "Coffee", address: "1845 33 Avenue SW", lat: 51.0242, lng: -114.1061 },
+  { id: "art-fact", name: "art&fact", type: "Medical Aesthetics", address: "1-2403 33 Avenue SW", lat: 51.0241, lng: -114.1181 },
+  { id: "atb", name: "ATB Financial", type: "Banking", address: "2140 34 Avenue SW", lat: 51.0230, lng: -114.1135 },
+  { id: "atha", name: "ATHA Hot Yoga", type: "Fitness", address: "#216, 2031 33 Ave SW", lat: 51.0242, lng: -114.1100 },
+  { id: "austin-baby", name: "Austin Baby Boutique", type: "Retail", address: "1907 34 Avenue SW #106", lat: 51.0231, lng: -114.1072 },
+  { id: "avitus", name: "Avitus Wine Bar", type: "Restaurant", address: "1934 34 Ave SW", lat: 51.0231, lng: -114.1080 },
+  { id: "axis", name: "Axis Pharmacy Clinic", type: "Pharmacy", address: "3503 20 Street SW", lat: 51.0218, lng: -114.1099 },
+  { id: "ballet-beats", name: "Ballet Beats", type: "Fitness", address: "1802 33rd Ave SW", lat: 51.0242, lng: -114.1054 },
+  { id: "bar-rocca", name: "Bar-Rocca", type: "Restaurant", address: "Unit 10 - 1907 34 Ave SW", lat: 51.0231, lng: -114.1072 },
+  { id: "bellas", name: "Bella's Italiana", type: "Cafe", address: "3497 18 Street SW", lat: 51.0224, lng: -114.1057 },
+  { id: "belle-beauty", name: "Belle Beauty Lounge", type: "Beauty", address: "2032 34th Ave SW", lat: 51.0231, lng: -114.1098 },
+  { id: "bells-cafe", name: "Bells Café", type: "Coffee", address: "1515 34th Avenue SW", lat: 51.0232, lng: -114.1005 },
+  { id: "belmont", name: "Belmont Diner", type: "Restaurant", address: "19 - 2008 33 Avenue", lat: 51.0242, lng: -114.1092 },
+  { id: "big-fish", name: "Big Fish & Open Range", type: "Restaurant", address: "2018 33 Ave SW", lat: 51.0242, lng: -114.1095 },
+  { id: "bliss-beauty", name: "Bliss Beauty", type: "Beauty", address: "3519 Garrison Gate SW", lat: 51.0206, lng: -114.1210 },
+  { id: "blush-lane", name: "Blush Lane Organic Market", type: "Grocery", address: "2044 33 Avenue SW", lat: 51.0242, lng: -114.1104 },
+  { id: "bonjour", name: "Bonjour Sandwich Shop", type: "Restaurant", address: "101-1909 34 Ave SW", lat: 51.0231, lng: -114.1072 },
+  { id: "boogies", name: "Boogies Burgers", type: "Restaurant", address: "2129 33 Avenue SW", lat: 51.0242, lng: -114.1134 },
+  { id: "booster-juice", name: "Booster Juice", type: "Food & Drink", address: "3542 Garrison Gate SW", lat: 51.0205, lng: -114.1214 },
+  { id: "bronze-baxx", name: "Bronze Baxx Marda Loop", type: "Wellness", address: "3507 20 St SW", lat: 51.0217, lng: -114.1099 },
+  { id: "brooklyn-dumpling", name: "Brooklyn Dumpling Shop", type: "Restaurant", address: "2004 34 Ave SW", lat: 51.0231, lng: -114.1090 },
+  { id: "bruni-law", name: "Bruni Law", type: "Professional Services", address: "#1 3501A 18th Street SW", lat: 51.0224, lng: -114.1057 },
+  { id: "butts-co", name: "Butts & Co.", type: "Retail", address: "#105, 3470 18th St. SW", lat: 51.0230, lng: -114.1058 },
+  { id: "cain-beauty", name: "Cain Beauty", type: "Beauty", address: "1934 34 Ave SW", lat: 51.0231, lng: -114.1080 },
+  { id: "calgary-medispa", name: "Calgary Medispa", type: "Medical Aesthetics", address: "2022 34 Avenue SW", lat: 51.0231, lng: -114.1095 },
+  { id: "chachis", name: "Chachi’s Marda Loop", type: "Restaurant", address: "101 2040 34 Ave SW", lat: 51.0231, lng: -114.1102 },
+  { id: "chew-chew", name: "Chew Chew Pediatric Dentistry", type: "Dentistry", address: "201 - 2215 33 Avenue", lat: 51.0241, lng: -114.1154 },
+  { id: "choux-c", name: "Choux.and.c Bakery Cafe", type: "Bakery", address: "121, 2215 33 Ave SW", lat: 51.0241, lng: -114.1154 },
+  { id: "cibc", name: "CIBC", type: "Banking", address: "2412 34 Avenue SW", lat: 51.0230, lng: -114.1183 },
+  { id: "club-pilates", name: "Club Pilates Marda Loop", type: "Fitness", address: "130, 2107-34th Ave SW", lat: 51.0230, lng: -114.1120 },
+  { id: "cobs", name: "COBS Bread", type: "Bakery", address: "3233 22 Street SW", lat: 51.0252, lng: -114.1134 },
+  { id: "code-ninjas", name: "Code Ninjas Marda Loop", type: "Education", address: "208 - 2032 33 Ave SW", lat: 51.0242, lng: -114.1099 },
+  { id: "connie-johns", name: "Connie & John's Pizza", type: "Restaurant", address: "2044 33 Avenue SW", lat: 51.0242, lng: -114.1104 },
+  { id: "core-psychology", name: "Core Psychology", type: "Mental Health", address: "2032 33 Ave SW", lat: 51.0242, lng: -114.1099 },
+  { id: "counterpoint", name: "Counterpoint Dance Academy Marda Loop", type: "Education", address: "318 - 3425 22 Street SW", lat: 51.0223, lng: -114.1134 },
+  { id: "crabapple", name: "Crabapple Clothing Company", type: "Clothing", address: "3526 Garrison Gate SW", lat: 51.0205, lng: -114.1212 },
+  { id: "fraser-fig", name: "Fraser & Fig", type: "Specialty Foods", address: "2010 34 Ave SW", lat: 51.0231, lng: -114.1093 },
+  { id: "marda-doggie", name: "Marda Loop Doggie Daycare & Spa", type: "Pet Services", address: "2016 34 Ave SW", lat: 51.0231, lng: -114.1094 },
+  { id: "marda-dentistry", name: "Marda Loop Family Dentistry", type: "Dentistry", address: "2215 33 Avenue SW", lat: 51.0241, lng: -114.1154 },
+  { id: "marda-medical", name: "Marda Loop Medical Clinic", type: "Medical", address: "2108 A 33rd Ave SW", lat: 51.0242, lng: -114.1128 },
+  { id: "marda-wellness", name: "Marda Loop Naturopathic and Wellness Clinic", type: "Health & Wellness", address: "Unit 1 - 1519 34 Ave SW", lat: 51.0232, lng: -114.1006 },
+  { id: "swish", name: "SWISH Salon", type: "Salon", address: "Marda Loop", lat: 51.0230, lng: -114.1078 },
+  { id: "symmetry", name: "Symmetry Therapy Studio", type: "Beauty", address: "2022 34 Ave SW", lat: 51.0231, lng: -114.1095 },
+  { id: "tats-treats", name: "Tat’s Treats", type: "Dessert", address: "115 - 1934 34 Ave SW", lat: 51.0231, lng: -114.1080 },
+  { id: "td", name: "TD Bank Help & Advice Centre", type: "Banking", address: "3510 Garrison Gate SW", lat: 51.0205, lng: -114.1210 },
+  { id: "tesoro", name: "Tesoro Beauty", type: "Beauty", address: "1907 34 Ave SW Suite 202", lat: 51.0231, lng: -114.1072 },
+  { id: "attic", name: "The Attic", type: "Salon", address: "201 1909 34 Ave SW Studio 3", lat: 51.0231, lng: -114.1072 },
+  { id: "clothing-bar", name: "The Clothing Bar Boutique Inc.", type: "Clothing", address: "1911 34 Avenue SW", lat: 51.0231, lng: -114.1073 },
+  { id: "plant-place", name: "The Plant Place Marda Loop", type: "Retail", address: "3474 18th Street SW", lat: 51.0226, lng: -114.1057 },
+  { id: "pretty-dope", name: "The Pretty Dope Studio", type: "Beauty", address: "Unit #202 1909 34th Ave SW", lat: 51.0231, lng: -114.1072 },
+  { id: "wheelhouse", name: "The Wheelhouse", type: "Fitness", address: "2136 33 Ave SW", lat: 51.0242, lng: -114.1136 },
+];
+
+const rewards = [
+  { count: 1, title: "Weekly Prize Entry" },
+  { count: 3, title: "Bonus Prize Entry" },
+  { count: 5, title: "Grand Prize Entry" },
+  { count: 6, title: "Full Passport Badge" },
+];
+
+function IconStamp({ filled }) {
+  return (
+    <div className={`grid h-14 w-14 place-items-center rounded-2xl border-2 ${filled ? "border-orange-500 bg-orange-500 text-white" : "border-slate-200 bg-white text-slate-300"}`}>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 10V6a5 5 0 0 1 10 0v4" />
+        <path d="M5 10h14l-1 9H6l-1-9Z" />
+        <path d="M8 14h8" />
+      </svg>
+    </div>
+  );
+}
+
+function Pill({ children, tone = "slate" }) {
+  const tones = {
+    slate: "bg-white/80 text-slate-700 ring-slate-200",
+    orange: "bg-orange-100 text-orange-700 ring-orange-200",
+    blue: "bg-blue-100 text-blue-700 ring-blue-200",
+    dark: "bg-slate-950 text-white ring-slate-950",
+    green: "bg-emerald-100 text-emerald-700 ring-emerald-200",
+  };
+  return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-black ring-1 ${tones[tone]}`}>{children}</span>;
+}
+
+function App() {
+  const [tab, setTab] = useState("passport");
+  const [locations, setLocations] = useState(businessDirectory.filter((b) => ["blush-lane", "phil-sebastian", "annabelles", "belmont", "big-fish", "cobs"].includes(b.id)).map((b, i) => ({ ...b, scans: [37, 51, 29, 42, 34, 26][i] })));
+  const [collected, setCollected] = useState(["blush-lane", "phil-sebastian"]);
+  const [selectedScan, setSelectedScan] = useState("annabelles");
+  const [businessSearch, setBusinessSearch] = useState("");
+  const [emailSubject, setEmailSubject] = useState("Social Sundays update");
+  const [emailBody, setEmailBody] = useState("Hi there,\n\nA quick reminder that Social Sundays is underway in Marda Loop. Keep collecting stamps before the contest closes.\n\nThanks for taking part!");
+  const [sentEmails, setSentEmails] = useState([]);
+
+  const collectedCount = collected.length;
+  const progress = Math.round((collectedCount / Math.max(locations.length, 1)) * 100);
+  const unlockedRewards = rewards.filter((r) => collectedCount >= r.count);
+  const nextReward = rewards.find((r) => collectedCount < r.count);
+  const selectedLocation = locations.find((l) => l.id === selectedScan) || locations[0] || businessDirectory[0];
+  const alreadyCollected = collected.includes(selectedLocation.id);
+  const totalScans = useMemo(() => locations.reduce((sum, l) => sum + (l.scans || 0), 0), [locations]);
+  const participants = 184;
+
+  function collectStamp(id) {
+    if (!collected.includes(id)) setCollected([...collected, id]);
+  }
+
+  function toggleBusiness(business) {
+    const exists = locations.some((l) => l.id === business.id);
+    if (exists) {
+      setLocations(locations.filter((l) => l.id !== business.id));
+      setCollected(collected.filter((id) => id !== business.id));
+    } else {
+      setLocations([...locations, { ...business, scans: 0 }]);
+    }
+  }
+
+  const filteredBusinesses = businessDirectory.filter((b) => `${b.name} ${b.type} ${b.address}`.toLowerCase().includes(businessSearch.toLowerCase()));
+
+  return (
+    <div className="min-h-screen bg-[#F8F1E7] text-slate-950">
+      <header className="sticky top-0 z-10 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+          <Logo />
+          <nav className="flex rounded-full bg-slate-100 p-1 text-sm font-black">
+            {[["passport", "Passport"], ["scan", "QR Scan"], ["admin", "Admin"]].map(([id, label]) => (
+              <button key={id} onClick={() => setTab(id)} className={`rounded-full px-4 py-2 ${tab === id ? "bg-white shadow-sm" : "text-slate-500"}`}>{label}</button>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        {tab === "passport" && (
+          <div className="grid gap-8 lg:grid-cols-[1fr_390px]">
+            <section className="space-y-6">
+              <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-orange-600 via-orange-500 to-yellow-400 p-8 text-white shadow-xl">
+                <Pill tone="dark">{campaign.dates}</Pill>
+                <h1 className="mt-5 text-5xl font-black tracking-tight">{campaign.title}</h1>
+                <p className="mt-3 max-w-2xl text-lg font-semibold text-white/90">{campaign.subtitle}</p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button className="rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950 shadow-lg">Start Passport</button>
+                  <button className="rounded-full bg-slate-950/20 px-5 py-3 text-sm font-black text-white ring-1 ring-white/30">View Rewards</button>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{collectedCount}/{locations.length}</div><div className="text-sm font-bold text-slate-500">Stamps collected</div></div>
+                <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{unlockedRewards.length}</div><div className="text-sm font-bold text-slate-500">Rewards unlocked</div></div>
+                <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">1x</div><div className="text-sm font-bold text-slate-500">Stamp per business</div></div>
+              </div>
+
+              <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-black">Your Passport</h2>
+                    <p className="mt-1 text-sm font-semibold text-slate-500">Tap any participating business below to simulate scanning its unique QR code.</p>
+                  </div>
+                  <Pill tone="blue">{progress}% complete</Pill>
+                </div>
+                <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: `${progress}%` }} />
+                </div>
+                <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {locations.map((loc) => {
+                    const has = collected.includes(loc.id);
+                    return (
+                      <button key={loc.id} onClick={() => collectStamp(loc.id)} className={`rounded-3xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md ${has ? "border-orange-200 bg-orange-50" : "border-slate-200 bg-slate-50"}`}>
+                        <IconStamp filled={has} />
+                        <div className="mt-4 font-black">{loc.name}</div>
+                        <div className="mt-1 text-xs font-bold text-slate-500">{has ? "Collected" : "Not collected"} · {loc.type}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+
+            <aside className="rounded-[2.3rem] bg-slate-950 p-2 shadow-2xl">
+              <div className="min-h-[720px] rounded-[1.8rem] bg-[#FFF8EE] p-5">
+                <Logo className="h-20 w-auto" />
+                <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-black/5">
+                  <Pill tone="orange">Live mobile view</Pill>
+                  <h3 className="mt-4 text-3xl font-black leading-tight">Collect stamps. Unlock prizes.</h3>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">Scan QR codes at participating Marda Loop businesses during Social Sundays.</p>
+                  <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-orange-500" style={{ width: `${progress}%` }} /></div>
+                </div>
+                <div className="mt-4 rounded-[2rem] bg-slate-950 p-5 text-white">
+                  <div className="text-sm font-black">{nextReward ? `Next: ${nextReward.title}` : "All rewards unlocked"}</div>
+                  <div className="mt-1 text-xs font-semibold text-white/50">{nextReward ? `${nextReward.count - collectedCount} more stamp${nextReward.count - collectedCount === 1 ? "" : "s"} to go` : "Passport complete"}</div>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {locations.map((loc) => {
+                    const has = collected.includes(loc.id);
+                    return <div key={loc.id} className={`rounded-3xl p-4 ${has ? "bg-orange-500 text-white" : "bg-white text-slate-400"}`}><div className="text-2xl">✦</div><div className="mt-8 text-sm font-black leading-tight">{loc.name}</div><div className="mt-1 text-[10px] font-black uppercase tracking-widest opacity-70">{has ? "Stamped" : "Locked"}</div></div>;
+                  })}
+                </div>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        {tab === "scan" && (
+          <div className="grid gap-8 lg:grid-cols-[1fr_390px]">
+            <section className="space-y-6">
+              <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <Pill tone="blue">Unique QR per location</Pill>
+                <h1 className="mt-4 text-4xl font-black tracking-tight">QR scan flow</h1>
+                <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-500">Each business poster opens a unique URL. New users enter their name, email, and postal code. Returning users get the stamp immediately, unless they already collected it.</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {locations.map((loc) => (
+                  <button key={loc.id} onClick={() => setSelectedScan(loc.id)} className={`rounded-3xl border p-4 text-left ${selectedScan === loc.id ? "border-orange-400 bg-orange-50" : "border-slate-200 bg-white"}`}>
+                    <div className="grid h-16 w-16 place-items-center rounded-2xl bg-slate-950 text-white">QR</div>
+                    <div className="mt-4 font-black">{loc.name}</div>
+                    <div className="mt-1 text-xs font-bold text-slate-500">/stamp/{loc.id}</div>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <aside className="rounded-[2.3rem] bg-slate-950 p-2 shadow-2xl">
+              <div className="min-h-[720px] rounded-[1.8rem] bg-[#FFF8EE] p-5">
+                <div className="rounded-[2rem] bg-white p-5 text-center shadow-sm ring-1 ring-black/5">
+                  <div className="mx-auto grid h-48 w-48 place-items-center rounded-[2rem] bg-slate-950 text-5xl font-black text-white">QR</div>
+                  <div className="mt-5"><Pill tone="orange">{campaign.domain}</Pill></div>
+                  <h2 className="mt-5 text-3xl font-black leading-tight">You found {selectedLocation.name}</h2>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">This would be the screen shown after scanning the business poster.</p>
+                  <button onClick={() => collectStamp(selectedLocation.id)} disabled={alreadyCollected} className={`mt-6 w-full rounded-2xl px-5 py-4 text-sm font-black ${alreadyCollected ? "bg-slate-100 text-slate-400" : "bg-orange-500 text-white"}`}>{alreadyCollected ? "Already collected" : "Collect this stamp"}</button>
+                </div>
+                <div className="mt-4 rounded-[2rem] bg-slate-950 p-5 text-white">
+                  <div className="text-xl font-black">Moderate protection</div>
+                  <p className="mt-2 text-sm font-semibold text-white/60">One stamp per participant per business. Duplicate scans show “Already collected.”</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        {tab === "admin" && (
+          <div className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{businessDirectory.length}</div><div className="text-sm font-bold text-slate-500">Directory businesses</div></div>
+              <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{locations.length}</div><div className="text-sm font-bold text-slate-500">Selected for event</div></div>
+              <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{totalScans}</div><div className="text-sm font-bold text-slate-500">Total stamps</div></div>
+              <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><div className="text-3xl font-black">{participants}</div><div className="text-sm font-bold text-slate-500">Contest participants</div></div>
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+              <section className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <h1 className="text-3xl font-black">Business Directory</h1>
+                    <p className="mt-1 text-sm font-semibold text-slate-500">Select which Marda Loop businesses are participating in this event. This preview is seeded from the public Visit Marda Loop directory.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => setLocations([])} className="rounded-full bg-slate-100 px-4 py-2 text-sm font-black text-slate-600">Clear</button>
+                    <button onClick={() => setLocations(businessDirectory.map((b) => ({ ...b, scans: Math.floor(Math.random() * 25) })))} className="rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white">Select all</button>
+                  </div>
+                </div>
+
+                <input value={businessSearch} onChange={(e) => setBusinessSearch(e.target.value)} placeholder="Search businesses, categories, or addresses" className="mt-5 w-full rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold outline-none ring-1 ring-slate-200 focus:ring-2 focus:ring-orange-400" />
+
+                <div className="mt-5 max-h-[560px] space-y-2 overflow-auto pr-1">
+                  {filteredBusinesses.map((b) => {
+                    const checked = locations.some((l) => l.id === b.id);
+                    return (
+                      <label key={b.id} className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-3 transition ${checked ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                        <input type="checkbox" checked={checked} onChange={() => toggleBusiness(b)} className="h-5 w-5 accent-orange-500" />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate font-black text-slate-950">{b.name}</div>
+                          <div className="truncate text-xs font-bold text-slate-500">{b.type} · {b.address}</div>
+                        </div>
+                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${checked ? "bg-orange-500 text-white" : "bg-slate-100 text-slate-400"}`}>{checked ? "In" : "Out"}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-3xl font-black">Event Map</h2>
+                      <p className="mt-1 text-sm font-semibold text-slate-500">Selected businesses appear as numbered pins. In production this would use geocoded addresses and a live map layer.</p>
+                    </div>
+                    <Pill tone="blue">{locations.length} selected</Pill>
+                  </div>
+                  <div className="relative mt-5 h-[420px] overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100">
+                    <div className="absolute inset-0 bg-[#efe6d8]">
+                      <div className="absolute left-[8%] top-[22%] h-3 w-[90%] -rotate-6 rounded-full bg-white/80 shadow-sm" />
+                      <div className="absolute left-[2%] top-[52%] h-3 w-[96%] rotate-2 rounded-full bg-white/80 shadow-sm" />
+                      <div className="absolute left-[18%] top-[5%] h-[95%] w-3 rotate-3 rounded-full bg-white/80 shadow-sm" />
+                      <div className="absolute left-[58%] top-[0%] h-[100%] w-3 -rotate-2 rounded-full bg-white/80 shadow-sm" />
+                      <div className="absolute left-[0%] top-[74%] h-3 w-[100%] -rotate-3 rounded-full bg-white/80 shadow-sm" />
+                      <div className="absolute left-[10%] top-[12%] rounded-full bg-orange-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-orange-700">Marda Loop</div>
+                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-3 py-1 text-[10px] font-black text-slate-500 shadow-sm">Preview map, live map connects in production</div>
+                    </div>
+                    {locations.map((loc, i) => {
+                      const left = `${Math.min(94, Math.max(6, ((loc.lng + 114.126) / 0.028) * 100))}%`;
+                      const top = `${Math.min(94, Math.max(6, ((51.029 - loc.lat) / 0.013) * 100))}%`;
+                      return <div key={loc.id} className="absolute -translate-x-1/2 -translate-y-full" style={{ left, top }} title={loc.name}><div className="grid h-8 w-8 place-items-center rounded-full bg-orange-500 text-xs font-black text-white shadow-lg ring-4 ring-white">{i + 1}</div></div>;
+                    })}
+                  </div>
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    {locations.map((loc, i) => <div key={loc.id} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3"><span className="grid h-7 w-7 place-items-center rounded-full bg-orange-500 text-xs font-black text-white">{i + 1}</span><div className="min-w-0"><div className="truncate text-sm font-black">{loc.name}</div><div className="truncate text-xs font-bold text-slate-500">{loc.address}</div></div></div>)}
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-[1fr_0.8fr]">
+              <section className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-3xl font-black">Selected Event Businesses</h2>
+                    <p className="mt-1 text-sm font-semibold text-slate-500">These are the QR stamp locations for Social Sundays.</p>
+                  </div>
+                  <button className="rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white">Export QR CSV</button>
+                </div>
+                <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50 text-xs uppercase tracking-widest text-slate-400"><tr><th className="px-4 py-3">#</th><th className="px-4 py-3">Business</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">QR URL</th><th className="px-4 py-3 text-right">Scans</th></tr></thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {locations.map((loc, i) => <tr key={loc.id}><td className="px-4 py-4 font-black text-orange-600">{i + 1}</td><td className="px-4 py-4 font-black">{loc.name}<div className="text-xs font-semibold text-slate-400">{loc.address}</div></td><td className="px-4 py-4 font-semibold text-slate-500">{loc.type}</td><td className="px-4 py-4"><code className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-500">/stamp/{loc.id}</code></td><td className="px-4 py-4 text-right font-black">{loc.scans || 0}</td></tr>)}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="rounded-[2rem] bg-slate-950 p-6 text-white shadow-xl">
+                <h2 className="text-3xl font-black">Contest Email</h2>
+                <p className="mt-1 text-sm font-semibold text-white/50">Send updates to everyone taking part in the contest. This preview simulates sending. Production would connect to SendGrid, Mailchimp Transactional, Postmark, or AWS SES.</p>
+                <div className="mt-5 rounded-2xl bg-white/10 p-4 text-sm font-bold">Recipients: {participants} contest participants</div>
+                <input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} className="mt-4 w-full rounded-2xl border-0 bg-white px-4 py-3 text-sm font-bold text-slate-950 outline-none" />
+                <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={7} className="mt-3 w-full rounded-2xl border-0 bg-white px-4 py-3 text-sm font-bold text-slate-950 outline-none" />
+                <button onClick={() => setSentEmails([{ subject: emailSubject, body: emailBody, time: new Date().toLocaleTimeString(), recipients: participants }, ...sentEmails])} className="mt-3 w-full rounded-2xl bg-orange-500 px-5 py-4 text-sm font-black text-white">Send contest update</button>
+                <div className="mt-5 space-y-3">
+                  {sentEmails.length === 0 && <div className="rounded-2xl bg-white/10 p-4 text-sm font-semibold text-white/60">No emails sent in this preview yet.</div>}
+                  {sentEmails.map((email, i) => <div key={i} className="rounded-2xl bg-white/10 p-4"><div className="text-sm font-black">{email.subject}</div><div className="mt-1 text-xs font-semibold text-white/50">Sent to {email.recipients} people at {email.time}</div></div>)}
+                </div>
+              </section>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default App;
