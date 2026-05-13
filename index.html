@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Community Passport</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header class="header">
+  <h1>The Loop Social</h1>
+  <p>Social Sundays • Marda Loop</p>
+</header>
+
+<main class="container">
+
+  <section id="passport">
+    <h2>Your Passport</h2>
+    <div id="progress"></div>
+    <div id="stamps"></div>
+  </section>
+
+  <section id="scan">
+    <h2>Scan Result</h2>
+    <div id="scanResult">Scan a QR code to collect a stamp</div>
+  </section>
+
+  <section id="admin">
+    <h2>Admin Dashboard</h2>
+    <button onclick="exportCSV()">Export Data</button>
+    <div id="adminStats"></div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
