@@ -1,39 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Community Passport</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Loop Social | Community Passport</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="hero">
+    <div class="brand-badge">Community Passport</div>
+    <h1>The Loop Social</h1>
+    <p>Social Sundays in Marda Loop</p>
+    <div class="hero-actions">
+      <button class="primary-btn" data-tab="passport">View Passport</button>
+      <button class="secondary-btn" data-tab="admin">Admin Dashboard</button>
+    </div>
+  </header>
 
-<header class="header">
-  <h1>The Loop Social</h1>
-  <p>Social Sundays • Marda Loop</p>
-</header>
+  <nav class="tabs">
+    <button class="tab active" data-tab="passport">Passport</button>
+    <button class="tab" data-tab="scan">QR Scan</button>
+    <button class="tab" data-tab="admin">Admin</button>
+  </nav>
 
-<main class="container">
+  <main class="app-shell">
+    <section id="passport" class="page active">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Social Sundays · June 2026</p>
+          <h2>Your Digital Passport</h2>
+        </div>
+        <button class="secondary-btn small" id="resetParticipantBtn">Reset Demo</button>
+      </div>
 
-  <section id="passport">
-    <h2>Your Passport</h2>
-    <div id="progress"></div>
-    <div id="stamps"></div>
-  </section>
+      <div class="progress-card">
+        <div>
+          <strong id="participantName">Guest participant</strong>
+          <p id="participantMeta">Register once, then scan QR codes to collect stamps.</p>
+        </div>
+        <div class="progress-number" id="progressCount">0/6</div>
+        <div class="progress-bar">
+          <span id="progressFill"></span>
+        </div>
+      </div>
 
-  <section id="scan">
-    <h2>Scan Result</h2>
-    <div id="scanResult">Scan a QR code to collect a stamp</div>
-  </section>
+      <div id="stampGrid" class="stamp-grid"></div>
 
-  <section id="admin">
-    <h2>Admin Dashboard</h2>
-    <button onclick="exportCSV()">Export Data</button>
-    <div id="adminStats"></div>
-  </section>
+      <div class="rewards-card">
+        <h3>Prize Eligibility</h3>
+        <div id="rewardList" class="reward-list"></div>
+      </div>
+    </section>
 
-</main>
+    <section id="scan" class="page">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">QR Testing</p>
+          <h2>Scan Result</h2>
+        </div>
+      </div>
 
-<script src="script.js"></script>
+      <div id="scanResult" class="scan-result">
+        Open a QR URL or use the test buttons below.
+      </div>
+
+      <div class="card">
+        <h3>Manual QR Simulation</h3>
+        <p>Use these buttons to simulate scanning a business QR code.</p>
+        <div id="scanButtons" class="button-grid"></div>
+      </div>
+    </section>
+
+    <section id="admin" class="page">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Admin Dashboard</p>
+          <h2>Social Sundays Setup</h2>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat"><span id="directoryCount">0</span><small>Directory businesses</small></div>
+        <div class="stat"><span id="selectedCount">0</span><small>Selected businesses</small></div>
+        <div class="stat"><span id="participantCount">0</span><small>Participants</small></div>
+        <div class="stat"><span id="stampCount">0</span><small>Total stamps</small></div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="card">
+          <h3>Business Directory</h3>
+          <input id="businessSearch" class="input" placeholder="Search businesses..." />
+          <div class="admin-actions">
+            <button class="secondary-btn small" id="selectAllBtn">Select All</button>
+            <button class="secondary-btn small" id="clearAllBtn">Clear All</button>
+          </div>
+          <div id="businessDirectory" class="business-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Selected QR URLs</h3>
+          <p>These are the URLs you’ll turn into QR codes.</p>
+          <div id="qrList" class="qr-list"></div>
+          <button class="primary-btn full" id="exportQrBtn">Export QR URLs CSV</button>
+          <button class="secondary-btn full" id="exportDataBtn">Export Participant Data CSV</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Selected Business Map</h3>
+        <div id="fauxMap" class="faux-map"></div>
+      </div>
+
+      <div class="card">
+        <h3>Contest Email</h3>
+        <input id="emailSubject" class="input" placeholder="Subject line" />
+        <textarea id="emailBody" class="textarea" placeholder="Write your message..."></textarea>
+        <button class="primary-btn" id="sendEmailBtn">Simulate Send</button>
+        <div id="emailHistory" class="email-history"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="registrationModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Join The Loop Social</h2>
+      <p>Enter your details once to start collecting stamps.</p>
+      <input id="regName" class="input" placeholder="Full name" />
+      <input id="regEmail" class="input" placeholder="Email address" />
+      <input id="regPostal" class="input" placeholder="Postal code" />
+      <button class="primary-btn full" id="registerBtn">Start Passport</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
