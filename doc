@@ -4739,3 +4739,148 @@ Make passport business cards open map links
 Yes, this is a very good demo feature. It makes the passport feel useful, not just pretty buttons wearing fake moustaches.
 
 can you give me the entire script.js code to replace and then we can move on to the others
+ok i need to go back to just before the add camera demo functionality, because that broke everything. How do I go back, i've never done ths before
+
+Yes. You want to go back to this commit:
+
+8c1c06d — “Refactor participant and stamp display logic”
+
+That is the commit right before the broken one:
+800273e — “Add camera demo functionality…”
+
+Do this:
+
+On the GitHub page, click 8c1c06d.
+Click Browse files or the file icon for that commit.
+Open script.js.
+Click the Raw button.
+Select all, copy it.
+Go back to your current script.js.
+Click the pencil/edit button.
+Select everything in the file.
+Paste the older working code.
+Commit with a message like:
+
+Restore script.js before camera demo broke app
+
+That’s the safest newbie-friendly way. Basically: GitHub time machine, but without touching the scary buttons.
+
+tell me setp by step. I'm here <-
+
+Perfect. You’re on the right commit.
+
+Do this exactly:
+
+Click Browse files near the top.
+Click script.js.
+Click the Raw button.
+Press Cmd + A to select all.
+Press Cmd + C to copy.
+
+Then:
+
+Go back to the current repo main page: Code tab.
+Open script.js.
+Click the pencil/edit icon.
+Press Cmd + A to select the broken code.
+Press Cmd + V to paste the working old code.
+Click Commit changes.
+Commit message:
+
+Restore working script.js before camera demo
+
+Click Commit changes again.
+
+That should roll script.js back to the safe version without messing with scary Git stuff.
+
+i'm trying to click the pencil icon but it is locked
+
+That’s because you’re viewing an OLD commit snapshot, which GitHub treats like a museum exhibit. “Look, don’t touch.” Classic GitHub.
+
+Do this:
+
+Near the top left, click:
+“View file on default branch”
+
+It’s above the file list.
+
+That takes you back to the LIVE version of script.js on main.
+NOW the pencil/edit icon will work.
+Click the pencil icon.
+Press:
+Cmd + A
+then paste the working code you copied earlier.
+Scroll down.
+Commit message:
+Restore working script.js before camera demo
+Click:
+Commit changes
+
+Then refresh your preview page. You should be back to the stable version and your blood pressure may return below aviation warning light levels.
+
+ok that worked. now i need to make it so when i click the camera icon it opens tne native camera on iphone (or android) just for testing, not real qr code scanning). Then when i go back to the web app it shows "collected" 
+Thought for 8s
+
+Perfect. Do only these two changes in script.js.
+
+Step 1: Add this function
+
+Find this function:
+
+function openBusinessMap(business) {
+  window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
+}
+
+Directly below it, paste this:
+
+function openDemoCameraThenCollect(businessId) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.capture = "environment";
+  input.style.display = "none";
+
+  document.body.appendChild(input);
+
+  let collected = false;
+
+  function finishDemoScan() {
+    if (collected) return;
+    collected = true;
+
+    setTimeout(() => {
+      collectStamp(businessId);
+      input.remove();
+    }, 400);
+  }
+
+  input.addEventListener("change", finishDemoScan);
+
+  window.addEventListener("focus", finishDemoScan, { once: true });
+
+  input.click();
+}
+Step 2: Replace the camera button click action
+
+Find this part:
+
+const scanButton = stampCard.querySelector(".pending-status");
+scanButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  collectStamp(business.id);
+});
+
+Replace it with this:
+
+const scanButton = stampCard.querySelector(".pending-status");
+scanButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  openDemoCameraThenCollect(business.id);
+});
+Step 3: Commit it
+
+Commit message:
+
+Add demo camera launch for stamp button
+
+That should make the camera icon open the phone camera/photo picker, then mark the stamp as Collected when you return. Demo magic. Not real QR scanning yet, just a convincing stage prop with fewer gremlins.
