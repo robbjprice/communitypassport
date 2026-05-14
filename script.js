@@ -238,11 +238,19 @@ function openBusinessMap(business) {
 
 function renderPassport() {
   const selected = selectedBusinesses();
-  const collected = stampsForCampaign().filter((stamp) => selectedBusinessIds.includes(stamp.businessId));
+
+  const collected = stampsForCampaign().filter((stamp) =>
+    selectedBusinessIds.includes(stamp.businessId)
+  );
+
   const count = collected.length;
   const total = selected.length || 1;
 
-  if ($("participantName")) $("participantName").textContent = participant ? participant.name : "Guest participant";
+  if ($("participantName")) {
+    $("participantName").textContent = participant
+      ? participant.name
+      : "Guest participant";
+  }
 
   if ($("participantMeta")) {
     $("participantMeta").textContent = participant
@@ -250,8 +258,13 @@ function renderPassport() {
       : "Register once, then scan QR codes to collect stamps.";
   }
 
-  if ($("progressCount")) $("progressCount").textContent = `${count}/${selected.length}`;
-  if ($("progressFill")) $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
+  if ($("progressCount")) {
+    $("progressCount").textContent = `${count}/${selected.length}`;
+  }
+
+  if ($("progressFill")) {
+    $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
+  }
 
   const stampGrid = $("stampGrid");
 
@@ -262,18 +275,55 @@ function renderPassport() {
       const collectedHere = stampExists(business.id);
 
       const stampCard = document.createElement("div");
-      stampCard.className = `stamp ${collectedHere ? "collected" : ""}`;
+
+      stampCard.className = `stamp ${
+        collectedHere ? "collected" : "pending"
+      }`;
+
       stampCard.tabIndex = 0;
-      stampCard.setAttribute("role", "button");
-      stampCard.setAttribute("aria-label", `Open map for ${business.name}`);
+
+      stampCard.setAttribute(
+        "role",
+        "button"
+      );
+
+      stampCard.setAttribute(
+        "aria-label",
+        `Open map for ${business.name}`
+      );
 
       stampCard.innerHTML = `
-        <strong>${collectedHere ? "✓ " : ""}${business.name}</strong>
-        <span>${business.type} · ${business.address}</span>
-        <small class="map-hint">Tap for map</small>
+        <div class="stamp-top">
+          <div class="stamp-business">
+            <strong>${business.name}</strong>
+            <span>${business.type} · ${business.address}</span>
+          </div>
+
+          ${
+            collectedHere
+              ? `
+              <div class="stamp-status collected-status">
+                <div class="stamp-check">✓</div>
+                <small>Collected</small>
+              </div>
+            `
+              : `
+              <div class="stamp-status pending-status">
+                <div class="stamp-qr-icon">⌁</div>
+                <small>Scan QR<br />to Stamp</small>
+              </div>
+            `
+          }
+        </div>
+
+        <div class="stamp-bottom">
+          <small class="map-hint">Tap card for map</small>
+        </div>
       `;
 
-      stampCard.addEventListener("click", () => openBusinessMap(business));
+      stampCard.addEventListener("click", () => {
+        openBusinessMap(business);
+      });
 
       stampCard.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -292,16 +342,27 @@ function renderPassport() {
     rewardList.innerHTML = "";
 
     rewardTiers.forEach((tier) => {
-      const needed = tier.count === "all" ? selected.length : tier.count;
+      const needed =
+        tier.count === "all" ? selected.length : tier.count;
+
       const unlocked = count >= needed;
 
       const reward = document.createElement("div");
-      reward.className = `reward ${unlocked ? "unlocked" : ""}`;
+
+      reward.className = `reward ${
+        unlocked ? "unlocked" : ""
+      }`;
 
       reward.innerHTML = `
         <strong>${tier.title}</strong>
         <span>${tier.description}</span>
-        <small>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</small>
+        <small>
+          ${
+            unlocked
+              ? "Unlocked"
+              : `${needed} stamp${needed === 1 ? "" : "s"}`
+          }
+        </small>
       `;
 
       rewardList.appendChild(reward);
