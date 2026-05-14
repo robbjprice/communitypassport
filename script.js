@@ -235,7 +235,33 @@ function mapUrlForBusiness(business) {
 function openBusinessMap(business) {
   window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
 }
+function openDemoCameraThenCollect(businessId) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.capture = "environment";
+  input.style.display = "none";
 
+  document.body.appendChild(input);
+
+  let collected = false;
+
+  function finishDemoScan() {
+    if (collected) return;
+    collected = true;
+
+    setTimeout(() => {
+      collectStamp(businessId);
+      input.remove();
+    }, 400);
+  }
+
+  input.addEventListener("change", finishDemoScan);
+
+  window.addEventListener("focus", finishDemoScan, { once: true });
+
+  input.click();
+}
 function renderPassport() {
   const selected = selectedBusinesses();
 
