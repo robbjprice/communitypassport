@@ -332,10 +332,10 @@ function renderPassport() {
       });
 
       const scanButton = stampCard.querySelector(".pending-status");
-      scanButton?.addEventListener("click", (event) => {
-        event.stopPropagation();
-        collectStamp(business.id);
-      });
+scanButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  openDemoCameraThenCollect(business.id);
+});
 
       stampGrid.appendChild(stampCard);
     });
