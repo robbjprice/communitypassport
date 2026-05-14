@@ -158,29 +158,6 @@ main {
   background: #ffe8de;
 }
 
-.bottom-nav {
-  max-width: 1180px;
-  margin: 0 auto 20px;
-  padding: 0 24px;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.bottom-nav .tab {
-  background: transparent;
-  color: var(--muted);
-  padding: 14px 18px;
-  border-radius: 16px;
-  font-weight: 700;
-}
-
-.bottom-nav .tab.active {
-  background: #ffffff;
-  color: var(--text);
-  box-shadow: var(--shadow-soft);
-}
-
 .campaign-card,
 .reward-card,
 .admin-panel,
@@ -266,6 +243,19 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.stamp:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+  background: #f9fbff;
+}
+
+.stamp:focus {
+  outline: 3px solid rgba(39, 100, 168, 0.18);
+  outline-offset: 3px;
 }
 
 .stamp strong {
@@ -280,6 +270,13 @@ main {
   border-style: solid;
   border-color: var(--blue);
   background: #f5f9ff;
+}
+
+.map-hint {
+  margin-top: 10px;
+  color: var(--blue);
+  font-weight: 800;
+  font-size: 0.8rem;
 }
 
 .reward-card {
@@ -634,7 +631,6 @@ main {
 @media (max-width: 680px) {
   .site-header,
   main,
-  .bottom-nav,
   .site-footer {
     padding-left: 16px;
     padding-right: 16px;
@@ -663,6 +659,10 @@ main {
   .reward-card h2,
   .admin-header h2 {
     font-size: 2.85rem;
+  }
+
+  .stamp-grid {
+    grid-template-columns: 1fr;
   }
 
   .primary-btn,
