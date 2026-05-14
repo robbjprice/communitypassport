@@ -16,23 +16,12 @@
 
       <div class="hero-copy">
         <p class="subhead">
-          Scan participating businesses, collect stamps, and unlock prizes during Social Sundays.
+          Scan participating businesses, collect stamps, unlock prizes, and find your way around Social Sundays.
         </p>
       </div>
     </div>
-
-    <div class="header-actions">
-      <button class="primary-btn tab active" type="button" data-tab="passport">
-        View Passport
-      </button>
-
-      <button class="secondary-btn tab" type="button" data-tab="scan">
-        Test QR Scan
-      </button>
-    </div>
   </header>
 
-   
   <main>
     <section id="passport" class="page active">
       <div class="campaign-card">
@@ -69,28 +58,6 @@
         <h2>Prize Eligibility</h2>
 
         <div id="rewardList" class="reward-list"></div>
-      </div>
-    </section>
-
-    <section id="scan" class="page">
-      <div class="campaign-card">
-        <h2>QR Testing</h2>
-
-        <div class="scan-result-card">
-          <h3>Scan Result</h3>
-
-          <p id="scanResult">
-            Open a QR URL or use the test buttons below.
-          </p>
-        </div>
-
-        <h3>Manual QR Simulation</h3>
-
-        <p class="muted">
-          Use these buttons to simulate scanning a business QR code.
-        </p>
-
-        <div id="scanButtons" class="scan-buttons"></div>
       </div>
     </section>
 
@@ -245,12 +212,12 @@
   </main>
 
   <footer class="site-footer">
+    <button id="adminButton" class="admin-float-btn" type="button">
+      Admin
+    </button>
+
     <img src="marda-loop.png" alt="Marda Loop" class="footer-logo" />
   </footer>
-
-  <button id="adminButton" class="admin-float-btn" type="button">
-    Admin
-  </button>
 
   <div id="registrationModal" class="modal hidden">
     <div class="modal-card">
