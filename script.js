@@ -247,9 +247,7 @@ function renderPassport() {
   const total = selected.length || 1;
 
   if ($("participantName")) {
-    $("participantName").textContent = participant
-      ? participant.name
-      : "Guest participant";
+    $("participantName").textContent = participant ? participant.name : "Guest participant";
   }
 
   if ($("participantMeta")) {
@@ -258,13 +256,8 @@ function renderPassport() {
       : "Register once, then scan QR codes to collect stamps.";
   }
 
-  if ($("progressCount")) {
-    $("progressCount").textContent = `${count}/${selected.length}`;
-  }
-
-  if ($("progressFill")) {
-    $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
-  }
+  if ($("progressCount")) $("progressCount").textContent = `${count}/${selected.length}`;
+  if ($("progressFill")) $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
 
   const stampGrid = $("stampGrid");
 
@@ -273,24 +266,9 @@ function renderPassport() {
 
     selected.forEach((business) => {
       const collectedHere = stampExists(business.id);
-
       const stampCard = document.createElement("div");
 
-      stampCard.className = `stamp ${
-        collectedHere ? "collected" : "pending"
-      }`;
-
-      stampCard.tabIndex = 0;
-
-      stampCard.setAttribute(
-        "role",
-        "button"
-      );
-
-      stampCard.setAttribute(
-        "aria-label",
-        `Open map for ${business.name}`
-      );
+      stampCard.className = `stamp ${collectedHere ? "collected" : "pending"}`;
 
       stampCard.innerHTML = `
         <div class="stamp-top">
@@ -302,34 +280,35 @@ function renderPassport() {
           ${
             collectedHere
               ? `
-              <div class="stamp-status collected-status">
-                <div class="stamp-check">✓</div>
-                <small>Collected</small>
-              </div>
-            `
+                <div class="stamp-status collected-status">
+                  <div class="stamp-check">✓</div>
+                  <small>Collected</small>
+                </div>
+              `
               : `
-              <div class="stamp-status pending-status">
-                <div class="stamp-qr-icon">⌁</div>
-                <small>Scan QR<br />to Stamp</small>
-              </div>
-            `
+                <button class="stamp-status pending-status" type="button" aria-label="Scan QR code for ${business.name}">
+                  <div class="stamp-camera">📷</div>
+                  <small>Scan QR<br />to Stamp</small>
+                </button>
+              `
           }
         </div>
 
         <div class="stamp-bottom">
-          <small class="map-hint">Tap card for map</small>
+          <button class="map-hint" type="button">Tap for map</button>
         </div>
       `;
 
-      stampCard.addEventListener("click", () => {
+      const mapButton = stampCard.querySelector(".map-hint");
+      mapButton?.addEventListener("click", (event) => {
+        event.stopPropagation();
         openBusinessMap(business);
       });
 
-      stampCard.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openBusinessMap(business);
-        }
+      const scanButton = stampCard.querySelector(".pending-status");
+      scanButton?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        collectStamp(business.id);
       });
 
       stampGrid.appendChild(stampCard);
@@ -342,27 +321,16 @@ function renderPassport() {
     rewardList.innerHTML = "";
 
     rewardTiers.forEach((tier) => {
-      const needed =
-        tier.count === "all" ? selected.length : tier.count;
-
+      const needed = tier.count === "all" ? selected.length : tier.count;
       const unlocked = count >= needed;
 
       const reward = document.createElement("div");
-
-      reward.className = `reward ${
-        unlocked ? "unlocked" : ""
-      }`;
+      reward.className = `reward ${unlocked ? "unlocked" : ""}`;
 
       reward.innerHTML = `
         <strong>${tier.title}</strong>
         <span>${tier.description}</span>
-        <small>
-          ${
-            unlocked
-              ? "Unlocked"
-              : `${needed} stamp${needed === 1 ? "" : "s"}`
-          }
-        </small>
+        <small>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</small>
       `;
 
       rewardList.appendChild(reward);
