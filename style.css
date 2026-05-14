@@ -434,3 +434,25 @@ h3 {
     font-size: 48px;
   }
 }
+.site-footer {
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px 120px;
+}
+
+.admin-link {
+  border: none;
+  background: transparent;
+  color: #8a8f98;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-link:hover {
+  color: var(--primary);
+  transform: translateY(-1px);
+}
