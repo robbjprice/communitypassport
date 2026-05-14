@@ -12,44 +12,60 @@
     <div class="hero-branding">
       <div class="logo-stack">
         <img src="social-sundays.png" alt="Social Sundays" class="social-logo" />
-        <img src="marda-loop.png" alt="Marda Loop" class="marda-logo" />
       </div>
 
       <div class="hero-copy">
-        <p class="eyebrow">Community Passport Experience</p>
-        <h1>Explore Marda Loop</h1>
-        <p class="subhead">Scan local businesses, collect stamps, unlock prizes, and discover the community.</p>
+        <p class="subhead">
+          Scan participating businesses, collect stamps, and unlock prizes during Social Sundays.
+        </p>
       </div>
     </div>
 
     <div class="header-actions">
-      <button class="primary-btn tab active" type="button" data-tab="passport">View Passport</button>
-      <button class="secondary-btn tab" type="button" data-tab="scan">Test QR Scan</button>
+      <button class="primary-btn tab active" type="button" data-tab="passport">
+        View Passport
+      </button>
+
+      <button class="secondary-btn tab" type="button" data-tab="scan">
+        Test QR Scan
+      </button>
     </div>
   </header>
 
   <nav class="bottom-nav">
-    <button class="tab active" type="button" data-tab="passport">Passport</button>
-    <button class="tab" type="button" data-tab="scan">QR Scan</button>
+    <button class="tab active" type="button" data-tab="passport">
+      Passport
+    </button>
+
+    <button class="tab" type="button" data-tab="scan">
+      QR Scan
+    </button>
   </nav>
 
   <main>
     <section id="passport" class="page active">
       <div class="campaign-card">
         <p class="eyebrow">Social Sundays · June 2026</p>
+
         <h2>Your Digital Passport</h2>
 
-        <button id="resetParticipantBtn" class="ghost-btn" type="button">Reset Demo</button>
+        <button id="resetParticipantBtn" class="ghost-btn" type="button">
+          Reset Demo
+        </button>
 
         <div class="participant-card">
           <h3 id="participantName">Guest participant</h3>
-          <p id="participantMeta">Register once, then scan QR codes to collect stamps.</p>
+
+          <p id="participantMeta">
+            Register once, then scan QR codes to collect stamps.
+          </p>
         </div>
 
         <div class="progress-card">
           <div class="progress-topline">
             <strong id="progressCount">0/6</strong>
           </div>
+
           <div class="progress-track">
             <div id="progressFill" class="progress-fill"></div>
           </div>
@@ -60,6 +76,7 @@
 
       <div class="reward-card">
         <h2>Prize Eligibility</h2>
+
         <div id="rewardList" class="reward-list"></div>
       </div>
     </section>
@@ -70,11 +87,17 @@
 
         <div class="scan-result-card">
           <h3>Scan Result</h3>
-          <p id="scanResult">Open a QR URL or use the test buttons below.</p>
+
+          <p id="scanResult">
+            Open a QR URL or use the test buttons below.
+          </p>
         </div>
 
         <h3>Manual QR Simulation</h3>
-        <p class="muted">Use these buttons to simulate scanning a business QR code.</p>
+
+        <p class="muted">
+          Use these buttons to simulate scanning a business QR code.
+        </p>
 
         <div id="scanButtons" class="scan-buttons"></div>
       </div>
@@ -87,7 +110,9 @@
           <h2>Social Sundays Setup</h2>
         </div>
 
-        <button id="adminLogoutBtn" class="ghost-btn" type="button">Log Out</button>
+        <button id="adminLogoutBtn" class="ghost-btn" type="button">
+          Log Out
+        </button>
       </div>
 
       <div class="stats-grid">
@@ -118,11 +143,21 @@
             <h3>Business Directory</h3>
           </div>
 
-          <input id="businessSearch" class="input" type="text" placeholder="Search businesses..." />
+          <input
+            id="businessSearch"
+            class="input"
+            type="text"
+            placeholder="Search businesses..."
+          />
 
           <div class="button-row">
-            <button id="selectAllBtn" class="secondary-btn" type="button">Select All</button>
-            <button id="clearAllBtn" class="ghost-btn" type="button">Clear All</button>
+            <button id="selectAllBtn" class="secondary-btn" type="button">
+              Select All
+            </button>
+
+            <button id="clearAllBtn" class="ghost-btn" type="button">
+              Clear All
+            </button>
           </div>
 
           <div id="businessDirectory" class="business-directory"></div>
@@ -131,20 +166,29 @@
         <section class="admin-panel">
           <div class="panel-header">
             <h3>Selected QR URLs</h3>
-            <p class="muted">These are the URLs you’ll turn into QR codes.</p>
+
+            <p class="muted">
+              These are the URLs you’ll turn into QR codes.
+            </p>
           </div>
 
           <div id="qrList" class="qr-list"></div>
 
           <div class="button-row">
-            <button id="exportQrBtn" class="secondary-btn" type="button">Export QR URLs CSV</button>
-            <button id="exportDataBtn" class="secondary-btn" type="button">Export Participant Data CSV</button>
+            <button id="exportQrBtn" class="secondary-btn" type="button">
+              Export QR URLs CSV
+            </button>
+
+            <button id="exportDataBtn" class="secondary-btn" type="button">
+              Export Participant Data CSV
+            </button>
           </div>
         </section>
       </div>
 
       <section class="admin-panel">
         <h3>Selected Business Map</h3>
+
         <div id="fauxMap" class="faux-map"></div>
       </section>
 
@@ -152,20 +196,46 @@
         <section class="admin-panel">
           <h3>Contest Email</h3>
 
-          <input id="emailSubject" class="input" type="text" placeholder="Email subject" />
-          <textarea id="emailBody" class="textarea" placeholder="Email message"></textarea>
+          <input
+            id="emailSubject"
+            class="input"
+            type="text"
+            placeholder="Email subject"
+          />
 
-          <button id="sendEmailBtn" class="primary-btn" type="button">Simulate Send</button>
+          <textarea
+            id="emailBody"
+            class="textarea"
+            placeholder="Email message"
+          ></textarea>
+
+          <button id="sendEmailBtn" class="primary-btn" type="button">
+            Simulate Send
+          </button>
 
           <div id="emailHistory" class="email-history"></div>
         </section>
 
         <section class="admin-panel">
           <h3>Admin Users</h3>
-          <p class="muted">Prototype admin roles. These will move to Supabase auth later.</p>
 
-          <input id="adminName" class="input" type="text" placeholder="Admin name" />
-          <input id="adminEmail" class="input" type="email" placeholder="Admin email" />
+          <p class="muted">
+            Prototype admin roles. These will move to Supabase auth later.
+          </p>
+
+          <input
+            id="adminName"
+            class="input"
+            type="text"
+            placeholder="Admin name"
+          />
+
+          <input
+            id="adminEmail"
+            class="input"
+            type="email"
+            placeholder="Admin email"
+          />
 
           <select id="adminRole" class="input">
             <option value="master" selected>Master Admin</option>
@@ -173,7 +243,9 @@
             <option value="viewer">Viewer / Export Only</option>
           </select>
 
-          <button id="addAdminBtn" class="secondary-btn" type="button">Add Admin User</button>
+          <button id="addAdminBtn" class="secondary-btn" type="button">
+            Add Admin User
+          </button>
 
           <div id="adminUserList" class="admin-user-list"></div>
         </section>
@@ -181,34 +253,78 @@
     </section>
   </main>
 
-  <button id="adminButton" class="admin-float-btn" type="button">Admin</button>
+  <footer class="site-footer">
+    <img src="marda-loop.png" alt="Marda Loop" class="footer-logo" />
+  </footer>
+
+  <button id="adminButton" class="admin-float-btn" type="button">
+    Admin
+  </button>
 
   <div id="registrationModal" class="modal hidden">
     <div class="modal-card">
       <h2>Join The Loop Social</h2>
-      <p>Enter your details once to start collecting stamps.</p>
 
-      <input id="regName" class="input" type="text" placeholder="Full name" />
-      <input id="regEmail" class="input" type="email" placeholder="Email address" />
-      <input id="regPostal" class="input" type="text" placeholder="Postal code" />
+      <p>
+        Enter your details once to start collecting stamps.
+      </p>
 
-      <button id="registerBtn" class="primary-btn" type="button">Start Passport</button>
+      <input
+        id="regName"
+        class="input"
+        type="text"
+        placeholder="Full name"
+      />
+
+      <input
+        id="regEmail"
+        class="input"
+        type="email"
+        placeholder="Email address"
+      />
+
+      <input
+        id="regPostal"
+        class="input"
+        type="text"
+        placeholder="Postal code"
+      />
+
+      <button id="registerBtn" class="primary-btn" type="button">
+        Start Passport
+      </button>
     </div>
   </div>
 
   <div id="adminLoginModal" class="modal hidden">
     <div class="modal-card">
       <h2>Admin Login</h2>
-      <p>This is a prototype login. Real admin accounts will be handled through Supabase later.</p>
 
-      <input id="adminPassword" class="input" type="password" placeholder="Enter admin password" />
+      <p>
+        This is a prototype login. Real admin accounts will be handled through
+        Supabase later.
+      </p>
+
+      <input
+        id="adminPassword"
+        class="input"
+        type="password"
+        placeholder="Enter admin password"
+      />
 
       <div class="button-row">
-        <button id="adminLoginBtn" class="primary-btn" type="button">Enter Admin Dashboard</button>
-        <button id="adminCancelBtn" class="ghost-btn" type="button">Cancel</button>
+        <button id="adminLoginBtn" class="primary-btn" type="button">
+          Enter Admin Dashboard
+        </button>
+
+        <button id="adminCancelBtn" class="ghost-btn" type="button">
+          Cancel
+        </button>
       </div>
 
-      <small class="muted">Demo password: loopadmin</small>
+      <small class="muted">
+        Demo password: loopadmin
+      </small>
     </div>
   </div>
 
