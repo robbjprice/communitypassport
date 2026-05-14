@@ -110,7 +110,7 @@ button {
 main {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 24px 70px;
+  padding: 0 24px 40px;
 }
 
 .page {
@@ -334,13 +334,11 @@ main {
 }
 
 .admin-float-btn {
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  z-index: 80;
+  display: block;
+  margin: 0 auto 30px;
   background: var(--text);
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-soft);
 }
 
 .admin-float-btn:hover {
@@ -351,7 +349,7 @@ main {
 .site-footer {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 10px 24px 110px;
+  padding: 10px 24px 80px;
   display: flex;
   justify-content: center;
 }
