@@ -235,6 +235,54 @@ function mapUrlForBusiness(business) {
 function openBusinessMap(business) {
   window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
 }
+let activeCameraStream = null;
+let pendingCameraBusinessId = null;
+
+function openCameraDemo(businessId) {
+  pendingCameraBusinessId = businessId;
+
+  const modal = document.createElement("div");
+  modal.id = "cameraDemoModal";
+  modal.className = "camera-demo-modal";
+
+  modal.innerHTML = `
+    <div class="camera-demo-card">
+      <video id="cameraPreview" autoplay playsinline></video>
+      <button id="closeCameraDemoBtn" type="button">Close Camera & Collect Stamp</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  navigator.mediaDevices
+    .getUserMedia({ video: { facingMode: "environment" } })
+    .then((stream) => {
+      activeCameraStream = stream;
+      const video = document.getElementById("cameraPreview");
+      if (video) video.srcObject = stream;
+    })
+    .catch(() => {
+      alert("Camera could not be opened. For demo, the stamp will still be collected.");
+      closeCameraDemo();
+    });
+
+  document.getElementById("closeCameraDemoBtn")?.addEventListener("click", closeCameraDemo);
+}
+
+function closeCameraDemo() {
+  if (activeCameraStream) {
+    activeCameraStream.getTracks().forEach((track) => track.stop());
+    activeCameraStream = null;
+  }
+
+  const modal = document.getElementById("cameraDemoModal");
+  if (modal) modal.remove();
+
+  if (pendingCameraBusinessId) {
+    collectStamp(pendingCameraBusinessId);
+    pendingCameraBusinessId = null;
+  }
+}
 
 function renderPassport() {
   const selected = selectedBusinesses();
@@ -306,13 +354,10 @@ function renderPassport() {
       });
 
       const scanButton = stampCard.querySelector(".pending-status");
-      scanButton?.addEventListener("click", (event) => {
-        event.stopPropagation();
-        collectStamp(business.id);
-      });
-
-      stampGrid.appendChild(stampCard);
-    });
+     scanButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  openCameraDemo(business.id);
+});
   }
 
   const rewardList = $("rewardList");
