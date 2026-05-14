@@ -2,14 +2,16 @@ const CAMPAIGN = {
   slug: "social-sundays",
   title: "Social Sundays",
   community: "Marda Loop",
-  date: "June 2026"
+  date: "June 2026",
 };
 
 const STORAGE = {
   participant: "communityPassportParticipant",
   stamps: "communityPassportStamps",
   selected: "communityPassportSelectedBusinesses",
-  emails: "communityPassportEmailHistory"
+  emails: "communityPassportEmailHistory",
+  admins: "communityPassportAdminUsers",
+  adminLoggedIn: "communityPassportAdminLoggedIn",
 };
 
 const businesses = [
@@ -52,7 +54,7 @@ const businesses = [
   { id: "marda-hair-studio", name: "Marda Hair Studio", type: "Beauty", address: "Marda Loop", lat: 51.0215, lng: -114.1153 },
   { id: "modern-nails", name: "Modern Nails Marda Loop", type: "Beauty", address: "Marda Loop", lat: 51.0252, lng: -114.1151 },
   { id: "local-laundry", name: "Local Laundry", type: "Retail", address: "Marda Loop", lat: 51.0206, lng: -114.1107 },
-  { id: "marda-loop-pilates", name: "Marda Loop Pilates", type: "Fitness", address: "Marda Loop", lat: 51.0262, lng: -114.1136 }
+  { id: "marda-loop-pilates", name: "Marda Loop Pilates", type: "Fitness", address: "Marda Loop", lat: 51.0262, lng: -114.1136 },
 ];
 
 const defaultSelected = [
@@ -61,20 +63,28 @@ const defaultSelected = [
   "annabelles-kitchen",
   "belmont-diner",
   "big-fish-open-range",
-  "cobs-bread"
+  "cobs-bread",
 ];
 
 const rewardTiers = [
   { count: 1, title: "Weekly Prize Entry", description: "You are entered into the weekly draw." },
   { count: 3, title: "Bonus Prize Entry", description: "You unlocked an extra prize entry." },
   { count: 5, title: "Grand Prize Entry", description: "You qualify for the grand prize draw." },
-  { count: "all", title: "Full Passport Badge", description: "You completed every selected stop." }
+  { count: "all", title: "Full Passport Badge", description: "You completed every selected stop." },
 ];
 
 let participant = getJSON(STORAGE.participant, null);
 let stamps = getJSON(STORAGE.stamps, []);
 let selectedBusinessIds = getJSON(STORAGE.selected, defaultSelected);
 let emailHistory = getJSON(STORAGE.emails, []);
+let adminUsers = getJSON(STORAGE.admins, [
+  { name: "Robb Price", email: "admin@theloopsocial.ca", role: "master" },
+]);
+let adminLoggedIn = getJSON(STORAGE.adminLoggedIn, false);
+
+function $(id) {
+  return document.getElementById(id);
+}
 
 function getJSON(key, fallback) {
   try {
@@ -105,7 +115,7 @@ function showTab(tabId) {
   document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
   document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
 
-  const page = document.getElementById(tabId);
+  const page = $(tabId);
   if (page) page.classList.add("active");
 
   document.querySelectorAll(`[data-tab="${tabId}"]`).forEach((tab) => tab.classList.add("active"));
@@ -117,14 +127,16 @@ function requireParticipant(callback) {
     return;
   }
 
-  document.getElementById("registrationModal").classList.remove("hidden");
+  const modal = $("registrationModal");
+  if (modal) modal.classList.remove("hidden");
+
   window.pendingAfterRegister = callback;
 }
 
 function registerParticipant() {
-  const name = document.getElementById("regName").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
-  const postal = document.getElementById("regPostal").value.trim();
+  const name = $("regName")?.value.trim();
+  const email = $("regEmail")?.value.trim();
+  const postal = $("regPostal")?.value.trim();
 
   if (!name || !email || !postal) {
     alert("Please enter your name, email, and postal code.");
@@ -138,11 +150,13 @@ function registerParticipant() {
     postalCode: postal,
     campaign: CAMPAIGN.slug,
     createdAt: new Date().toISOString(),
-    lastSeenAt: new Date().toISOString()
+    lastSeenAt: new Date().toISOString(),
   };
 
   setJSON(STORAGE.participant, participant);
-  document.getElementById("registrationModal").classList.add("hidden");
+
+  const modal = $("registrationModal");
+  if (modal) modal.classList.add("hidden");
 
   if (typeof window.pendingAfterRegister === "function") {
     window.pendingAfterRegister();
@@ -176,7 +190,7 @@ function collectStamp(businessId) {
         businessType: business.type,
         scannedAt: new Date().toISOString(),
         scanSource: "qr-or-demo",
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
       });
 
       participant.lastSeenAt = new Date().toISOString();
@@ -193,7 +207,7 @@ function collectStamp(businessId) {
 }
 
 function setScanMessage(message, status = "default") {
-  const scanResult = document.getElementById("scanResult");
+  const scanResult = $("scanResult");
   if (!scanResult) return;
 
   scanResult.textContent = message;
@@ -206,50 +220,56 @@ function renderPassport() {
   const count = collected.length;
   const total = selected.length || 1;
 
-  document.getElementById("participantName").textContent = participant ? participant.name : "Guest participant";
-  document.getElementById("participantMeta").textContent = participant
-    ? `${participant.email} · ${participant.postalCode}`
-    : "Register once, then scan QR codes to collect stamps.";
+  if ($("participantName")) $("participantName").textContent = participant ? participant.name : "Guest participant";
+  if ($("participantMeta")) {
+    $("participantMeta").textContent = participant
+      ? `${participant.email} · ${participant.postalCode}`
+      : "Register once, then scan QR codes to collect stamps.";
+  }
 
-  document.getElementById("progressCount").textContent = `${count}/${selected.length}`;
-  document.getElementById("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
+  if ($("progressCount")) $("progressCount").textContent = `${count}/${selected.length}`;
+  if ($("progressFill")) $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
 
-  const stampGrid = document.getElementById("stampGrid");
-  stampGrid.innerHTML = "";
+  const stampGrid = $("stampGrid");
+  if (stampGrid) {
+    stampGrid.innerHTML = "";
 
-  selected.forEach((business) => {
-    const collectedHere = stampExists(business.id);
-    const stampCard = document.createElement("div");
-    stampCard.className = `stamp ${collectedHere ? "collected" : ""}`;
-    stampCard.innerHTML = `
-      <strong>${collectedHere ? "✓ " : ""}${business.name}</strong>
-      <span>${business.type} · ${business.address}</span>
-    `;
-    stampGrid.appendChild(stampCard);
-  });
+    selected.forEach((business) => {
+      const collectedHere = stampExists(business.id);
+      const stampCard = document.createElement("div");
+      stampCard.className = `stamp ${collectedHere ? "collected" : ""}`;
+      stampCard.innerHTML = `
+        <strong>${collectedHere ? "✓ " : ""}${business.name}</strong>
+        <span>${business.type} · ${business.address}</span>
+      `;
+      stampGrid.appendChild(stampCard);
+    });
+  }
 
-  const rewardList = document.getElementById("rewardList");
-  rewardList.innerHTML = "";
+  const rewardList = $("rewardList");
+  if (rewardList) {
+    rewardList.innerHTML = "";
 
-  rewardTiers.forEach((tier) => {
-    const needed = tier.count === "all" ? selected.length : tier.count;
-    const unlocked = count >= needed;
+    rewardTiers.forEach((tier) => {
+      const needed = tier.count === "all" ? selected.length : tier.count;
+      const unlocked = count >= needed;
 
-    const reward = document.createElement("div");
-    reward.className = `reward ${unlocked ? "unlocked" : ""}`;
-    reward.innerHTML = `
-      <div>
+      const reward = document.createElement("div");
+      reward.className = `reward ${unlocked ? "unlocked" : ""}`;
+      reward.innerHTML = `
         <strong>${tier.title}</strong>
-        <small>${tier.description}</small>
-      </div>
-      <span>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</span>
-    `;
-    rewardList.appendChild(reward);
-  });
+        <span>${tier.description}</span>
+        <small>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</small>
+      `;
+      rewardList.appendChild(reward);
+    });
+  }
 }
 
 function renderScanButtons() {
-  const scanButtons = document.getElementById("scanButtons");
+  const scanButtons = $("scanButtons");
+  if (!scanButtons) return;
+
   scanButtons.innerHTML = "";
 
   selectedBusinesses().forEach((business) => {
@@ -262,35 +282,43 @@ function renderScanButtons() {
 }
 
 function renderAdmin() {
-  document.getElementById("directoryCount").textContent = businesses.length;
-  document.getElementById("selectedCount").textContent = selectedBusinessIds.length;
-  document.getElementById("participantCount").textContent = participant ? 1 : 0;
-  document.getElementById("stampCount").textContent = stampsForCampaign().length;
+  const adminPage = $("admin");
+  if (adminPage) {
+    adminPage.style.display = adminLoggedIn ? "" : "none";
+  }
+
+  if ($("directoryCount")) $("directoryCount").textContent = businesses.length;
+  if ($("selectedCount")) $("selectedCount").textContent = selectedBusinessIds.length;
+  if ($("participantCount")) $("participantCount").textContent = participant ? 1 : 0;
+  if ($("stampCount")) $("stampCount").textContent = stampsForCampaign().length;
 
   renderBusinessDirectory();
   renderQrList();
   renderMap();
   renderEmailHistory();
+  renderAdminUsers();
 }
 
 function renderBusinessDirectory() {
-  const searchInput = document.getElementById("businessSearch");
-  const query = searchInput ? searchInput.value.toLowerCase() : "";
-  const list = document.getElementById("businessDirectory");
+  const list = $("businessDirectory");
+  if (!list) return;
 
+  const query = $("businessSearch") ? $("businessSearch").value.toLowerCase() : "";
   list.innerHTML = "";
 
   businesses
-    .filter((business) => `${business.name} ${business.type} ${business.address}`.toLowerCase().includes(query))
+    .filter((business) =>
+      `${business.name} ${business.type} ${business.address}`.toLowerCase().includes(query)
+    )
     .forEach((business) => {
       const row = document.createElement("label");
       row.className = "business-row";
       row.innerHTML = `
         <input type="checkbox" ${selectedBusinessIds.includes(business.id) ? "checked" : ""} />
-        <div>
+        <span>
           <strong>${business.name}</strong>
           <small>${business.type} · ${business.address}</small>
-        </div>
+        </span>
       `;
 
       row.querySelector("input").addEventListener("change", (event) => {
@@ -318,16 +346,20 @@ function qrUrl(businessId) {
 }
 
 function renderQrList() {
-  const qrList = document.getElementById("qrList");
+  const qrList = $("qrList");
+  if (!qrList) return;
+
   qrList.innerHTML = "";
 
   selectedBusinesses().forEach((business) => {
     const row = document.createElement("div");
     row.className = "qr-row";
     row.innerHTML = `
-      <strong>${business.name}</strong>
-      <div class="qr-url">${qrUrl(business.id)}</div>
-      <button class="copy-btn" type="button">Copy URL</button>
+      <div>
+        <strong>${business.name}</strong>
+        <small>${qrUrl(business.id)}</small>
+      </div>
+      <button type="button">Copy URL</button>
     `;
 
     row.querySelector("button").addEventListener("click", async () => {
@@ -347,7 +379,9 @@ function renderQrList() {
 }
 
 function renderMap() {
-  const map = document.getElementById("fauxMap");
+  const map = $("fauxMap");
+  if (!map) return;
+
   map.innerHTML = "";
 
   selectedBusinesses().forEach((business, index) => {
@@ -359,15 +393,15 @@ function renderMap() {
     pin.style.left = `${Math.max(8, Math.min(92, x))}%`;
     pin.style.top = `${Math.max(10, Math.min(88, y))}%`;
     pin.title = business.name;
-    pin.innerHTML = `<span>${index + 1}</span>`;
+    pin.innerHTML = `${index + 1}`;
 
     map.appendChild(pin);
   });
 }
 
 function sendEmail() {
-  const subject = document.getElementById("emailSubject").value.trim();
-  const body = document.getElementById("emailBody").value.trim();
+  const subject = $("emailSubject")?.value.trim();
+  const body = $("emailBody")?.value.trim();
 
   if (!subject || !body) {
     alert("Add a subject and message.");
@@ -378,21 +412,25 @@ function sendEmail() {
     subject,
     body,
     recipientCount: participant ? 1 : 0,
-    sentAt: new Date().toLocaleString()
+    sentAt: new Date().toLocaleString(),
   });
 
   setJSON(STORAGE.emails, emailHistory);
-  document.getElementById("emailSubject").value = "";
-  document.getElementById("emailBody").value = "";
+
+  $("emailSubject").value = "";
+  $("emailBody").value = "";
+
   renderEmailHistory();
 }
 
 function renderEmailHistory() {
-  const history = document.getElementById("emailHistory");
+  const history = $("emailHistory");
+  if (!history) return;
+
   history.innerHTML = "";
 
   if (!emailHistory.length) {
-    history.innerHTML = `<div class="email-row"><small>No emails sent yet.</small></div>`;
+    history.innerHTML = `<p class="muted">No emails sent yet.</p>`;
     return;
   }
 
@@ -400,16 +438,75 @@ function renderEmailHistory() {
     const row = document.createElement("div");
     row.className = "email-row";
     row.innerHTML = `
-      <strong>${email.subject}</strong><br>
+      <strong>${email.subject}</strong>
       <small>${email.sentAt} · ${email.recipientCount} recipient${email.recipientCount === 1 ? "" : "s"}</small>
     `;
     history.appendChild(row);
   });
 }
 
+function renderAdminUsers() {
+  const adminList = $("adminUserList");
+  if (!adminList) return;
+
+  adminList.innerHTML = "";
+
+  if (!adminUsers.length) {
+    adminList.innerHTML = `<p class="muted">No admin users added yet.</p>`;
+    return;
+  }
+
+  adminUsers.forEach((admin, index) => {
+    const row = document.createElement("div");
+    row.className = "admin-user-row";
+    row.innerHTML = `
+      <div>
+        <strong>${admin.name}</strong>
+        <small>${admin.email} · ${formatRole(admin.role)}</small>
+      </div>
+      <button type="button" data-admin-index="${index}">Remove</button>
+    `;
+
+    row.querySelector("button").addEventListener("click", () => {
+      if (!confirm(`Remove ${admin.name} as an admin user?`)) return;
+      adminUsers.splice(index, 1);
+      setJSON(STORAGE.admins, adminUsers);
+      renderAdminUsers();
+    });
+
+    adminList.appendChild(row);
+  });
+}
+
+function addAdminUser() {
+  const name = $("adminName")?.value.trim();
+  const email = $("adminEmail")?.value.trim();
+  const role = $("adminRole")?.value || "viewer";
+
+  if (!name || !email) {
+    alert("Add an admin name and email.");
+    return;
+  }
+
+  adminUsers.push({ name, email, role });
+  setJSON(STORAGE.admins, adminUsers);
+
+  $("adminName").value = "";
+  $("adminEmail").value = "";
+  $("adminRole").value = "master";
+
+  renderAdminUsers();
+}
+
+function formatRole(role) {
+  if (role === "master") return "Master Admin";
+  if (role === "event") return "Event Admin";
+  return "Viewer / Export Only";
+}
+
 function exportCSV(filename, rows) {
   const csv = rows
-    .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","))
+    .map((row) => row.map((value) => `"${String(value ?? "").replaceAll('"', '""')}"`).join(","))
     .join("\n");
 
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -443,7 +540,7 @@ function exportDataCsv() {
       stamp.postalCode,
       stamp.businessName,
       stamp.businessType || "",
-      stamp.scannedAt
+      stamp.scannedAt,
     ]);
   });
 
@@ -463,6 +560,42 @@ function resetDemo() {
   renderAll();
 }
 
+function openAdminLogin() {
+  const modal = $("adminLoginModal");
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeAdminLogin() {
+  const modal = $("adminLoginModal");
+  if (modal) modal.classList.add("hidden");
+
+  const password = $("adminPassword");
+  if (password) password.value = "";
+}
+
+function adminLogin() {
+  const password = $("adminPassword")?.value || "";
+
+  if (password !== "loopadmin") {
+    alert("Wrong password. Demo password is loopadmin.");
+    return;
+  }
+
+  adminLoggedIn = true;
+  setJSON(STORAGE.adminLoggedIn, true);
+
+  closeAdminLogin();
+  showTab("admin");
+  renderAll();
+}
+
+function adminLogout() {
+  adminLoggedIn = false;
+  setJSON(STORAGE.adminLoggedIn, false);
+  showTab("passport");
+  renderAll();
+}
+
 function handleUrlScan() {
   const params = new URLSearchParams(window.location.search);
   const campaign = params.get("campaign");
@@ -475,28 +608,46 @@ function handleUrlScan() {
 
 function wireEvents() {
   document.querySelectorAll("[data-tab]").forEach((button) => {
-    button.addEventListener("click", () => showTab(button.dataset.tab));
+    button.addEventListener("click", () => {
+      if (button.dataset.tab === "admin" && !adminLoggedIn) {
+        openAdminLogin();
+        return;
+      }
+
+      showTab(button.dataset.tab);
+    });
   });
 
-  document.getElementById("registerBtn").addEventListener("click", registerParticipant);
-  document.getElementById("resetParticipantBtn").addEventListener("click", resetDemo);
-  document.getElementById("businessSearch").addEventListener("input", renderBusinessDirectory);
+  $("registerBtn")?.addEventListener("click", registerParticipant);
+  $("resetParticipantBtn")?.addEventListener("click", resetDemo);
 
-  document.getElementById("selectAllBtn").addEventListener("click", () => {
+  $("businessSearch")?.addEventListener("input", renderBusinessDirectory);
+
+  $("selectAllBtn")?.addEventListener("click", () => {
     selectedBusinessIds = businesses.map((business) => business.id);
     setJSON(STORAGE.selected, selectedBusinessIds);
     renderAll();
   });
 
-  document.getElementById("clearAllBtn").addEventListener("click", () => {
+  $("clearAllBtn")?.addEventListener("click", () => {
     selectedBusinessIds = [];
     setJSON(STORAGE.selected, selectedBusinessIds);
     renderAll();
   });
 
-  document.getElementById("exportQrBtn").addEventListener("click", exportQrCsv);
-  document.getElementById("exportDataBtn").addEventListener("click", exportDataCsv);
-  document.getElementById("sendEmailBtn").addEventListener("click", sendEmail);
+  $("exportQrBtn")?.addEventListener("click", exportQrCsv);
+  $("exportDataBtn")?.addEventListener("click", exportDataCsv);
+  $("sendEmailBtn")?.addEventListener("click", sendEmail);
+
+  $("adminButton")?.addEventListener("click", openAdminLogin);
+  $("adminLoginBtn")?.addEventListener("click", adminLogin);
+  $("adminCancelBtn")?.addEventListener("click", closeAdminLogin);
+  $("adminLogoutBtn")?.addEventListener("click", adminLogout);
+  $("addAdminBtn")?.addEventListener("click", addAdminUser);
+
+  $("adminPassword")?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") adminLogin();
+  });
 }
 
 function renderAll() {
