@@ -32,7 +32,27 @@ const businesses = [
   { id: "towa-sushi", name: "Towa Sushi", type: "Restaurant", address: "Marda Loop", lat: 51.0228, lng: -114.118 },
   { id: "my-favourite-ice-cream", name: "My Favourite Ice Cream Shoppe", type: "Dessert", address: "Marda Loop", lat: 51.0239, lng: -114.106 },
   { id: "sandy-beach-dental", name: "Sandy Beach Dental", type: "Health", address: "Marda Loop", lat: 51.0224, lng: -114.1065 },
-  { id: "marda-loop-vet", name: "Marda Loop Veterinary Centre", type: "Pets", address: "Marda Loop", lat: 51.0249, lng: -114.116 }
+  { id: "marda-loop-vet", name: "Marda Loop Veterinary Centre", type: "Pets", address: "Marda Loop", lat: 51.0249, lng: -114.116 },
+  { id: "marda-loop-medical", name: "Marda Loop Medical Clinic", type: "Health", address: "Marda Loop", lat: 51.0241, lng: -114.1142 },
+  { id: "marda-loop-pharmacy", name: "Marda Loop Pharmacy", type: "Pharmacy", address: "Marda Loop", lat: 51.0238, lng: -114.1129 },
+  { id: "good-earth", name: "Good Earth Coffeehouse", type: "Coffee", address: "Marda Loop", lat: 51.0247, lng: -114.1116 },
+  { id: "fresh-kitchen", name: "Fresh Kitchen", type: "Restaurant", address: "Marda Loop", lat: 51.0229, lng: -114.1158 },
+  { id: "pet-planet", name: "Pet Planet", type: "Pets", address: "Marda Loop", lat: 51.0246, lng: -114.1162 },
+  { id: "the-source", name: "The Source", type: "Retail", address: "Marda Loop", lat: 51.024, lng: -114.1094 },
+  { id: "marda-loop-chiro", name: "Marda Loop Chiropractic", type: "Health", address: "Marda Loop", lat: 51.0235, lng: -114.117 },
+  { id: "marda-loop-optical", name: "Marda Loop Optometry", type: "Health", address: "Marda Loop", lat: 51.0227, lng: -114.1165 },
+  { id: "lululemon-local", name: "Local Activewear Studio", type: "Fitness", address: "Marda Loop", lat: 51.0221, lng: -114.1119 },
+  { id: "marda-loop-yoga", name: "Marda Loop Yoga", type: "Fitness", address: "Marda Loop", lat: 51.0219, lng: -114.1099 },
+  { id: "urban-cellars", name: "Urban Cellars", type: "Retail", address: "Marda Loop", lat: 51.0236, lng: -114.1087 },
+  { id: "marda-loop-florist", name: "Marda Loop Florist", type: "Retail", address: "Marda Loop", lat: 51.0248, lng: -114.1089 },
+  { id: "boutique-west", name: "Boutique West", type: "Retail", address: "Marda Loop", lat: 51.0254, lng: -114.1118 },
+  { id: "prairie-dog-brewing", name: "Prairie Dog Brewing Market", type: "Restaurant", address: "Marda Loop", lat: 51.0231, lng: -114.1185 },
+  { id: "marda-loop-books", name: "Marda Loop Books", type: "Retail", address: "Marda Loop", lat: 51.0217, lng: -114.1125 },
+  { id: "the-sweat-lab", name: "The Sweat Lab", type: "Fitness", address: "Marda Loop", lat: 51.0209, lng: -114.1136 },
+  { id: "marda-hair-studio", name: "Marda Hair Studio", type: "Beauty", address: "Marda Loop", lat: 51.0215, lng: -114.1153 },
+  { id: "modern-nails", name: "Modern Nails Marda Loop", type: "Beauty", address: "Marda Loop", lat: 51.0252, lng: -114.1151 },
+  { id: "local-laundry", name: "Local Laundry", type: "Retail", address: "Marda Loop", lat: 51.0206, lng: -114.1107 },
+  { id: "marda-loop-pilates", name: "Marda Loop Pilates", type: "Fitness", address: "Marda Loop", lat: 51.0262, lng: -114.1136 }
 ];
 
 const defaultSelected = [
@@ -45,10 +65,10 @@ const defaultSelected = [
 ];
 
 const rewardTiers = [
-  { count: 1, title: "Weekly Prize Entry" },
-  { count: 3, title: "Bonus Prize Entry" },
-  { count: 5, title: "Grand Prize Entry" },
-  { count: "all", title: "Full Passport Badge" }
+  { count: 1, title: "Weekly Prize Entry", description: "You are entered into the weekly draw." },
+  { count: 3, title: "Bonus Prize Entry", description: "You unlocked an extra prize entry." },
+  { count: 5, title: "Grand Prize Entry", description: "You qualify for the grand prize draw." },
+  { count: "all", title: "Full Passport Badge", description: "You completed every selected stop." }
 ];
 
 let participant = getJSON(STORAGE.participant, null);
@@ -58,7 +78,8 @@ let emailHistory = getJSON(STORAGE.emails, []);
 
 function getJSON(key, fallback) {
   try {
-    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
   }
@@ -69,22 +90,25 @@ function setJSON(key, value) {
 }
 
 function selectedBusinesses() {
-  return businesses.filter(b => selectedBusinessIds.includes(b.id));
+  return businesses.filter((business) => selectedBusinessIds.includes(business.id));
 }
 
 function stampsForCampaign() {
-  return stamps.filter(s => s.campaign === CAMPAIGN.slug);
+  return stamps.filter((stamp) => stamp.campaign === CAMPAIGN.slug);
 }
 
 function stampExists(businessId) {
-  return stamps.some(s => s.campaign === CAMPAIGN.slug && s.businessId === businessId);
+  return stamps.some((stamp) => stamp.campaign === CAMPAIGN.slug && stamp.businessId === businessId);
 }
 
 function showTab(tabId) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.getElementById(tabId).classList.add("active");
-  document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(t => t.classList.add("active"));
+  document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
+
+  const page = document.getElementById(tabId);
+  if (page) page.classList.add("active");
+
+  document.querySelectorAll(`[data-tab="${tabId}"]`).forEach((tab) => tab.classList.add("active"));
 }
 
 function requireParticipant(callback) {
@@ -103,7 +127,7 @@ function registerParticipant() {
   const postal = document.getElementById("regPostal").value.trim();
 
   if (!name || !email || !postal) {
-    alert("Please enter name, email, and postal code.");
+    alert("Please enter your name, email, and postal code.");
     return;
   }
 
@@ -112,27 +136,34 @@ function registerParticipant() {
     name,
     email,
     postalCode: postal,
-    createdAt: new Date().toISOString()
+    campaign: CAMPAIGN.slug,
+    createdAt: new Date().toISOString(),
+    lastSeenAt: new Date().toISOString()
   };
 
   setJSON(STORAGE.participant, participant);
   document.getElementById("registrationModal").classList.add("hidden");
 
-  if (window.pendingAfterRegister) window.pendingAfterRegister();
+  if (typeof window.pendingAfterRegister === "function") {
+    window.pendingAfterRegister();
+    window.pendingAfterRegister = null;
+  }
+
   renderAll();
 }
 
 function collectStamp(businessId) {
-  const business = businesses.find(b => b.id === businessId);
+  const business = businesses.find((item) => item.id === businessId);
 
   if (!business) {
-    document.getElementById("scanResult").textContent = "Business not found.";
+    setScanMessage("Business not found. Please check the QR code.", "error");
+    showTab("scan");
     return;
   }
 
   requireParticipant(() => {
     if (stampExists(businessId)) {
-      document.getElementById("scanResult").textContent = `Already collected: ${business.name}`;
+      setScanMessage(`Already collected: ${business.name}`, "duplicate");
     } else {
       stamps.push({
         campaign: CAMPAIGN.slug,
@@ -142,10 +173,18 @@ function collectStamp(businessId) {
         postalCode: participant.postalCode,
         businessId,
         businessName: business.name,
-        scannedAt: new Date().toISOString()
+        businessType: business.type,
+        scannedAt: new Date().toISOString(),
+        scanSource: "qr-or-demo",
+        userAgent: navigator.userAgent
       });
+
+      participant.lastSeenAt = new Date().toISOString();
+
       setJSON(STORAGE.stamps, stamps);
-      document.getElementById("scanResult").textContent = `Stamp collected at ${business.name}!`;
+      setJSON(STORAGE.participant, participant);
+
+      setScanMessage(`Stamp collected at ${business.name}!`, "success");
     }
 
     showTab("scan");
@@ -153,9 +192,17 @@ function collectStamp(businessId) {
   });
 }
 
+function setScanMessage(message, status = "default") {
+  const scanResult = document.getElementById("scanResult");
+  if (!scanResult) return;
+
+  scanResult.textContent = message;
+  scanResult.dataset.status = status;
+}
+
 function renderPassport() {
   const selected = selectedBusinesses();
-  const collected = stampsForCampaign().filter(s => selectedBusinessIds.includes(s.businessId));
+  const collected = stampsForCampaign().filter((stamp) => selectedBusinessIds.includes(stamp.businessId));
   const count = collected.length;
   const total = selected.length || 1;
 
@@ -167,42 +214,50 @@ function renderPassport() {
   document.getElementById("progressCount").textContent = `${count}/${selected.length}`;
   document.getElementById("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
 
-  const grid = document.getElementById("stampGrid");
-  grid.innerHTML = "";
+  const stampGrid = document.getElementById("stampGrid");
+  stampGrid.innerHTML = "";
 
-  selected.forEach(b => {
-    const div = document.createElement("div");
-    div.className = `stamp ${stampExists(b.id) ? "collected" : ""}`;
-    div.innerHTML = `
-      <strong>${stampExists(b.id) ? "✓ " : ""}${b.name}</strong>
-      <span>${b.type} · ${b.address}</span>
+  selected.forEach((business) => {
+    const collectedHere = stampExists(business.id);
+    const stampCard = document.createElement("div");
+    stampCard.className = `stamp ${collectedHere ? "collected" : ""}`;
+    stampCard.innerHTML = `
+      <strong>${collectedHere ? "✓ " : ""}${business.name}</strong>
+      <span>${business.type} · ${business.address}</span>
     `;
-    grid.appendChild(div);
+    stampGrid.appendChild(stampCard);
   });
 
-  const rewards = document.getElementById("rewardList");
-  rewards.innerHTML = "";
+  const rewardList = document.getElementById("rewardList");
+  rewardList.innerHTML = "";
 
-  rewardTiers.forEach(r => {
-    const needed = r.count === "all" ? selected.length : r.count;
+  rewardTiers.forEach((tier) => {
+    const needed = tier.count === "all" ? selected.length : tier.count;
     const unlocked = count >= needed;
-    const div = document.createElement("div");
-    div.className = `reward ${unlocked ? "unlocked" : ""}`;
-    div.innerHTML = `<strong>${r.title}</strong><span>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</span>`;
-    rewards.appendChild(div);
+
+    const reward = document.createElement("div");
+    reward.className = `reward ${unlocked ? "unlocked" : ""}`;
+    reward.innerHTML = `
+      <div>
+        <strong>${tier.title}</strong>
+        <small>${tier.description}</small>
+      </div>
+      <span>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</span>
+    `;
+    rewardList.appendChild(reward);
   });
 }
 
 function renderScanButtons() {
-  const box = document.getElementById("scanButtons");
-  box.innerHTML = "";
+  const scanButtons = document.getElementById("scanButtons");
+  scanButtons.innerHTML = "";
 
-  selectedBusinesses().forEach(b => {
-    const btn = document.createElement("button");
-    btn.className = "secondary-btn";
-    btn.textContent = b.name;
-    btn.onclick = () => collectStamp(b.id);
-    box.appendChild(btn);
+  selectedBusinesses().forEach((business) => {
+    const button = document.createElement("button");
+    button.className = "secondary-btn";
+    button.textContent = business.name;
+    button.addEventListener("click", () => collectStamp(business.id));
+    scanButtons.appendChild(button);
   });
 }
 
@@ -219,26 +274,37 @@ function renderAdmin() {
 }
 
 function renderBusinessDirectory() {
-  const search = document.getElementById("businessSearch").value.toLowerCase();
+  const searchInput = document.getElementById("businessSearch");
+  const query = searchInput ? searchInput.value.toLowerCase() : "";
   const list = document.getElementById("businessDirectory");
+
   list.innerHTML = "";
 
   businesses
-    .filter(b => `${b.name} ${b.type} ${b.address}`.toLowerCase().includes(search))
-    .forEach(b => {
+    .filter((business) => `${business.name} ${business.type} ${business.address}`.toLowerCase().includes(query))
+    .forEach((business) => {
       const row = document.createElement("label");
       row.className = "business-row";
       row.innerHTML = `
-        <input type="checkbox" ${selectedBusinessIds.includes(b.id) ? "checked" : ""} />
-        <div><strong>${b.name}</strong><small>${b.type} · ${b.address}</small></div>
+        <input type="checkbox" ${selectedBusinessIds.includes(business.id) ? "checked" : ""} />
+        <div>
+          <strong>${business.name}</strong>
+          <small>${business.type} · ${business.address}</small>
+        </div>
       `;
-      row.querySelector("input").onchange = e => {
-        if (e.target.checked) selectedBusinessIds.push(b.id);
-        else selectedBusinessIds = selectedBusinessIds.filter(id => id !== b.id);
+
+      row.querySelector("input").addEventListener("change", (event) => {
+        if (event.target.checked) {
+          selectedBusinessIds.push(business.id);
+        } else {
+          selectedBusinessIds = selectedBusinessIds.filter((id) => id !== business.id);
+        }
+
         selectedBusinessIds = [...new Set(selectedBusinessIds)];
         setJSON(STORAGE.selected, selectedBusinessIds);
         renderAll();
-      };
+      });
+
       list.appendChild(row);
     });
 }
@@ -252,19 +318,31 @@ function qrUrl(businessId) {
 }
 
 function renderQrList() {
-  const list = document.getElementById("qrList");
-  list.innerHTML = "";
+  const qrList = document.getElementById("qrList");
+  qrList.innerHTML = "";
 
-  selectedBusinesses().forEach(b => {
+  selectedBusinesses().forEach((business) => {
     const row = document.createElement("div");
     row.className = "qr-row";
     row.innerHTML = `
-      <strong>${b.name}</strong>
-      <div class="qr-url">${qrUrl(b.id)}</div>
-      <button class="copy-btn">Copy URL</button>
+      <strong>${business.name}</strong>
+      <div class="qr-url">${qrUrl(business.id)}</div>
+      <button class="copy-btn" type="button">Copy URL</button>
     `;
-    row.querySelector("button").onclick = () => navigator.clipboard.writeText(qrUrl(b.id));
-    list.appendChild(row);
+
+    row.querySelector("button").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(qrUrl(business.id));
+        row.querySelector("button").textContent = "Copied!";
+        setTimeout(() => {
+          row.querySelector("button").textContent = "Copy URL";
+        }, 1200);
+      } catch {
+        alert("Copy failed. You can manually copy the URL shown.");
+      }
+    });
+
+    qrList.appendChild(row);
   });
 }
 
@@ -272,16 +350,17 @@ function renderMap() {
   const map = document.getElementById("fauxMap");
   map.innerHTML = "";
 
-  selectedBusinesses().forEach((b, index) => {
-    const x = 15 + ((b.lng + 114.12) / 0.02) * 70;
-    const y = 80 - ((b.lat - 51.02) / 0.008) * 60;
+  selectedBusinesses().forEach((business, index) => {
+    const x = 15 + ((business.lng + 114.12) / 0.02) * 70;
+    const y = 80 - ((business.lat - 51.02) / 0.008) * 60;
 
     const pin = document.createElement("div");
     pin.className = "pin";
     pin.style.left = `${Math.max(8, Math.min(92, x))}%`;
     pin.style.top = `${Math.max(10, Math.min(88, y))}%`;
-    pin.title = b.name;
+    pin.title = business.name;
     pin.innerHTML = `<span>${index + 1}</span>`;
+
     map.appendChild(pin);
   });
 }
@@ -309,53 +388,115 @@ function sendEmail() {
 }
 
 function renderEmailHistory() {
-  const box = document.getElementById("emailHistory");
-  box.innerHTML = "";
+  const history = document.getElementById("emailHistory");
+  history.innerHTML = "";
 
-  emailHistory.forEach(email => {
+  if (!emailHistory.length) {
+    history.innerHTML = `<div class="email-row"><small>No emails sent yet.</small></div>`;
+    return;
+  }
+
+  emailHistory.forEach((email) => {
     const row = document.createElement("div");
     row.className = "email-row";
-    row.innerHTML = `<strong>${email.subject}</strong><br><small>${email.sentAt} · ${email.recipientCount} recipients</small>`;
-    box.appendChild(row);
+    row.innerHTML = `
+      <strong>${email.subject}</strong><br>
+      <small>${email.sentAt} · ${email.recipientCount} recipient${email.recipientCount === 1 ? "" : "s"}</small>
+    `;
+    history.appendChild(row);
   });
 }
 
 function exportCSV(filename, rows) {
-  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"', '""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
+  const csv = rows
+    .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","))
+    .join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+
   URL.revokeObjectURL(url);
 }
 
 function exportQrCsv() {
   const rows = [["Business", "Type", "Address", "QR URL"]];
-  selectedBusinesses().forEach(b => rows.push([b.name, b.type, b.address, qrUrl(b.id)]));
+
+  selectedBusinesses().forEach((business) => {
+    rows.push([business.name, business.type, business.address, qrUrl(business.id)]);
+  });
+
   exportCSV("social-sundays-qr-urls.csv", rows);
 }
 
 function exportDataCsv() {
-  const rows = [["Participant", "Email", "Postal Code", "Business", "Scanned At"]];
-  stampsForCampaign().forEach(s => rows.push([s.participantName, s.email, s.postalCode, s.businessName, s.scannedAt]));
+  const rows = [["Participant", "Email", "Postal Code", "Business", "Business Type", "Scanned At"]];
+
+  stampsForCampaign().forEach((stamp) => {
+    rows.push([
+      stamp.participantName,
+      stamp.email,
+      stamp.postalCode,
+      stamp.businessName,
+      stamp.businessType || "",
+      stamp.scannedAt
+    ]);
+  });
+
   exportCSV("social-sundays-participant-stamps.csv", rows);
 }
 
 function resetDemo() {
   if (!confirm("Reset demo participant and stamps on this device?")) return;
+
   localStorage.removeItem(STORAGE.participant);
   localStorage.removeItem(STORAGE.stamps);
+
   participant = null;
   stamps = [];
+
+  setScanMessage("Demo reset. Scan a QR code or use the test buttons to start again.");
   renderAll();
 }
 
 function handleUrlScan() {
   const params = new URLSearchParams(window.location.search);
+  const campaign = params.get("campaign");
   const business = params.get("business");
-  if (business) collectStamp(business);
+
+  if (business && (!campaign || campaign === CAMPAIGN.slug)) {
+    collectStamp(business);
+  }
+}
+
+function wireEvents() {
+  document.querySelectorAll("[data-tab]").forEach((button) => {
+    button.addEventListener("click", () => showTab(button.dataset.tab));
+  });
+
+  document.getElementById("registerBtn").addEventListener("click", registerParticipant);
+  document.getElementById("resetParticipantBtn").addEventListener("click", resetDemo);
+  document.getElementById("businessSearch").addEventListener("input", renderBusinessDirectory);
+
+  document.getElementById("selectAllBtn").addEventListener("click", () => {
+    selectedBusinessIds = businesses.map((business) => business.id);
+    setJSON(STORAGE.selected, selectedBusinessIds);
+    renderAll();
+  });
+
+  document.getElementById("clearAllBtn").addEventListener("click", () => {
+    selectedBusinessIds = [];
+    setJSON(STORAGE.selected, selectedBusinessIds);
+    renderAll();
+  });
+
+  document.getElementById("exportQrBtn").addEventListener("click", exportQrCsv);
+  document.getElementById("exportDataBtn").addEventListener("click", exportDataCsv);
+  document.getElementById("sendEmailBtn").addEventListener("click", sendEmail);
 }
 
 function renderAll() {
@@ -364,26 +505,6 @@ function renderAll() {
   renderAdmin();
 }
 
-document.querySelectorAll("[data-tab]").forEach(btn => {
-  btn.addEventListener("click", () => showTab(btn.dataset.tab));
-});
-
-document.getElementById("registerBtn").addEventListener("click", registerParticipant);
-document.getElementById("businessSearch").addEventListener("input", renderBusinessDirectory);
-document.getElementById("selectAllBtn").addEventListener("click", () => {
-  selectedBusinessIds = businesses.map(b => b.id);
-  setJSON(STORAGE.selected, selectedBusinessIds);
-  renderAll();
-});
-document.getElementById("clearAllBtn").addEventListener("click", () => {
-  selectedBusinessIds = [];
-  setJSON(STORAGE.selected, selectedBusinessIds);
-  renderAll();
-});
-document.getElementById("exportQrBtn").addEventListener("click", exportQrCsv);
-document.getElementById("exportDataBtn").addEventListener("click", exportDataCsv);
-document.getElementById("sendEmailBtn").addEventListener("click", sendEmail);
-document.getElementById("resetParticipantBtn").addEventListener("click", resetDemo);
-
+wireEvents();
 renderAll();
 handleUrlScan();
