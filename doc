@@ -1,1 +1,95 @@
 
+# Community Passport App Notes
+
+## Project
+The app is called Community Passport for The Loop Social.
+
+Live site:
+https://robbjprice.github.io/communitypassport/
+
+GitHub repo:
+https://github.com/robbjprice/communitypassport
+
+## Current build status
+This is a static HTML, CSS, and JavaScript prototype hosted on GitHub Pages.
+
+Core files:
+- index.html
+- style.css
+- script.js
+
+## Important development preference
+Robb prefers full replacement code files, not small snippets, when making coding changes.
+
+## Current functionality
+The app currently includes:
+- Digital passport for participants
+- Participant registration modal
+- QR scan simulation
+- Stamp collection
+- Progress tracker
+- Prize eligibility tiers
+- Admin dashboard
+- Business directory
+- Business selection for event participation
+- Selected QR URL generation
+- CSV export buttons
+- Simulated contest email section
+- Prototype admin users
+- Prototype admin login
+
+## Admin system
+Admin password for prototype:
+loopadmin
+
+The admin button is currently visible but may not yet be fully functional.
+
+Likely issue:
+index.html may not have the exact IDs required by script.js.
+
+Required admin button ID:
+adminButton
+
+Required admin login modal ID:
+adminLoginModal
+
+Required admin password input ID:
+adminPassword
+
+Required admin login button ID:
+adminLoginBtn
+
+Required admin cancel button ID:
+adminCancelBtn
+
+Required admin logout button ID:
+adminLogoutBtn
+
+## Current bug / next step
+The admin button does not open the login modal yet.
+
+Next likely fix:
+Replace the full index.html file with a version that matches the current script.js exactly.
+
+After that, verify:
+- Admin button opens login modal
+- Password loopadmin opens dashboard
+- Logout works
+- Business selection works
+- QR URLs update
+- CSV exports work
+
+## Future backend plan
+Supabase will be added later after the front-end prototype is stable.
+
+Supabase will eventually handle:
+- Real participant database
+- Real admin login/auth
+- Real stamp records
+- Business/event management
+- Exportable participant/stamp data
+- Possibly email integrations
+
+## Important principle
+For now, GitHub is the source of truth for code.
+The doc file is the project memory so progress is not lost if ChatGPT/Ask Chat freezes.
