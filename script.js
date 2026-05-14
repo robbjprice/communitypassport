@@ -214,6 +214,28 @@ function setScanMessage(message, status = "default") {
   scanResult.dataset.status = status;
 }
 
+function mapUrlForBusiness(business) {
+  const fullAddress = business.address === "Marda Loop"
+    ? `${business.name}, Marda Loop, Calgary, AB`
+    : `${business.name}, ${business.address}, Calgary, AB`;
+
+  const query = encodeURIComponent(fullAddress);
+
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    return `https://maps.apple.com/?q=${query}`;
+  }
+
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+function openBusinessMap(business) {
+  window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
+}
+
 function renderPassport() {
   const selected = selectedBusinesses();
   const collected = stampsForCampaign().filter((stamp) => selectedBusinessIds.includes(stamp.businessId));
@@ -221,6 +243,7 @@ function renderPassport() {
   const total = selected.length || 1;
 
   if ($("participantName")) $("participantName").textContent = participant ? participant.name : "Guest participant";
+
   if ($("participantMeta")) {
     $("participantMeta").textContent = participant
       ? `${participant.email} · ${participant.postalCode}`
@@ -231,22 +254,40 @@ function renderPassport() {
   if ($("progressFill")) $("progressFill").style.width = `${Math.round((count / total) * 100)}%`;
 
   const stampGrid = $("stampGrid");
+
   if (stampGrid) {
     stampGrid.innerHTML = "";
 
     selected.forEach((business) => {
       const collectedHere = stampExists(business.id);
+
       const stampCard = document.createElement("div");
       stampCard.className = `stamp ${collectedHere ? "collected" : ""}`;
+      stampCard.tabIndex = 0;
+      stampCard.setAttribute("role", "button");
+      stampCard.setAttribute("aria-label", `Open map for ${business.name}`);
+
       stampCard.innerHTML = `
         <strong>${collectedHere ? "✓ " : ""}${business.name}</strong>
         <span>${business.type} · ${business.address}</span>
+        <small class="map-hint">Tap for map</small>
       `;
+
+      stampCard.addEventListener("click", () => openBusinessMap(business));
+
+      stampCard.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openBusinessMap(business);
+        }
+      });
+
       stampGrid.appendChild(stampCard);
     });
   }
 
   const rewardList = $("rewardList");
+
   if (rewardList) {
     rewardList.innerHTML = "";
 
@@ -256,11 +297,13 @@ function renderPassport() {
 
       const reward = document.createElement("div");
       reward.className = `reward ${unlocked ? "unlocked" : ""}`;
+
       reward.innerHTML = `
         <strong>${tier.title}</strong>
         <span>${tier.description}</span>
         <small>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</small>
       `;
+
       rewardList.appendChild(reward);
     });
   }
@@ -283,6 +326,7 @@ function renderScanButtons() {
 
 function renderAdmin() {
   const adminPage = $("admin");
+
   if (adminPage) {
     adminPage.style.display = adminLoggedIn ? "" : "none";
   }
@@ -304,6 +348,7 @@ function renderBusinessDirectory() {
   if (!list) return;
 
   const query = $("businessSearch") ? $("businessSearch").value.toLowerCase() : "";
+
   list.innerHTML = "";
 
   businesses
@@ -313,6 +358,7 @@ function renderBusinessDirectory() {
     .forEach((business) => {
       const row = document.createElement("label");
       row.className = "business-row";
+
       row.innerHTML = `
         <input type="checkbox" ${selectedBusinessIds.includes(business.id) ? "checked" : ""} />
         <span>
@@ -354,6 +400,7 @@ function renderQrList() {
   selectedBusinesses().forEach((business) => {
     const row = document.createElement("div");
     row.className = "qr-row";
+
     row.innerHTML = `
       <div>
         <strong>${business.name}</strong>
@@ -366,6 +413,7 @@ function renderQrList() {
       try {
         await navigator.clipboard.writeText(qrUrl(business.id));
         row.querySelector("button").textContent = "Copied!";
+
         setTimeout(() => {
           row.querySelector("button").textContent = "Copy URL";
         }, 1200);
@@ -437,10 +485,12 @@ function renderEmailHistory() {
   emailHistory.forEach((email) => {
     const row = document.createElement("div");
     row.className = "email-row";
+
     row.innerHTML = `
       <strong>${email.subject}</strong>
       <small>${email.sentAt} · ${email.recipientCount} recipient${email.recipientCount === 1 ? "" : "s"}</small>
     `;
+
     history.appendChild(row);
   });
 }
@@ -459,6 +509,7 @@ function renderAdminUsers() {
   adminUsers.forEach((admin, index) => {
     const row = document.createElement("div");
     row.className = "admin-user-row";
+
     row.innerHTML = `
       <div>
         <strong>${admin.name}</strong>
@@ -469,6 +520,7 @@ function renderAdminUsers() {
 
     row.querySelector("button").addEventListener("click", () => {
       if (!confirm(`Remove ${admin.name} as an admin user?`)) return;
+
       adminUsers.splice(index, 1);
       setJSON(STORAGE.admins, adminUsers);
       renderAdminUsers();
