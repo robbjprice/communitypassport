@@ -13,14 +13,13 @@
     <p>Social Sundays in Marda Loop</p>
     <div class="hero-actions">
       <button class="primary-btn" data-tab="passport">View Passport</button>
-      <button class="secondary-btn" data-tab="admin">Admin Dashboard</button>
+      <button class="secondary-btn" data-tab="scan">Test QR Scan</button>
     </div>
   </header>
 
   <nav class="tabs">
     <button class="tab active" data-tab="passport">Passport</button>
     <button class="tab" data-tab="scan">QR Scan</button>
-    <button class="tab" data-tab="admin">Admin</button>
   </nav>
 
   <main class="app-shell">
@@ -71,12 +70,13 @@
       </div>
     </section>
 
-    <section id="admin" class="page">
+    <section id="admin" class="page admin-page locked">
       <div class="section-head">
         <div>
           <p class="eyebrow">Admin Dashboard</p>
           <h2>Social Sundays Setup</h2>
         </div>
+        <button class="secondary-btn small" id="adminLogoutBtn">Log Out</button>
       </div>
 
       <div class="stats-grid">
@@ -118,8 +118,30 @@
         <button class="primary-btn" id="sendEmailBtn">Simulate Send</button>
         <div id="emailHistory" class="email-history"></div>
       </div>
+
+      <div class="card">
+        <h3>Admin Users</h3>
+        <p>Prototype admin roles. These will move to Supabase auth later.</p>
+
+        <div class="admin-user-form">
+          <input id="adminUserName" class="input" placeholder="Admin name" />
+          <input id="adminUserEmail" class="input" placeholder="Admin email" />
+          <select id="adminUserRole" class="input">
+            <option value="master">Master Admin</option>
+            <option value="event">Event Admin</option>
+            <option value="viewer">Viewer / Export Only</option>
+          </select>
+          <button class="primary-btn full" id="addAdminUserBtn">Add Admin User</button>
+        </div>
+
+        <div id="adminUsersList" class="admin-users-list"></div>
+      </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <button id="openAdminLoginBtn" class="admin-link">Admin</button>
+  </footer>
 
   <div id="registrationModal" class="modal hidden">
     <div class="modal-card">
@@ -131,6 +153,19 @@
       <button class="primary-btn full" id="registerBtn">Start Passport</button>
     </div>
   </div>
+
+  <div id="adminLoginModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Admin Login</h2>
+      <p>This is a prototype login. Real admin accounts will be handled through Supabase later.</p>
+      <input id="adminPassword" class="input" type="password" placeholder="Admin password" />
+      <button class="primary-btn full" id="adminLoginBtn">Enter Admin Dashboard</button>
+      <button class="secondary-btn full" id="closeAdminLoginBtn">Cancel</button>
+      <p class="hint">Demo password: <strong>loopadmin</strong></p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
 
   <script src="script.js"></script>
 </body>
