@@ -93,3 +93,1365 @@ Supabase will eventually handle:
 ## Important principle
 For now, GitHub is the source of truth for code.
 The doc file is the project memory so progress is not lost if ChatGPT/Ask Chat freezes.
+so you froze in my other tab where i'm working on building the app
+
+Got it. Don’t refresh or close that frozen Ask Chat tab yet.
+
+Best move:
+
+Leave the frozen tab open.
+Open this chat in a new Atlas tab/window.
+Ask me here for a “handoff summary” of the app build so far.
+I’ll create a clean continuation summary you can paste into a new Ask Chat without needing the whole frozen history.
+After that, you can safely continue from the new chat.
+
+The frozen chat history may still recover, but don’t depend on it. We can rebuild the working context from what I can see on the app page plus what I remember from this build.
+
+Totally fair. Here’s the safest step-by-step:
+
+Do not close the frozen tab.
+Go to the frozen GitHub tab with the Ask Chat sidebar.
+Click inside the frozen chat/sidebar once.
+Try copying everything:
+Mac: Command + A
+then Command + C
+Open a blank note/doc/text editor.
+Paste:
+Mac: Command + V
+Check if the chat history pasted.
+
+If that works, great. Save it immediately.
+
+If it does not work:
+
+In the frozen sidebar, scroll upward if you can.
+Select text manually from the chat:
+click and drag from the newest visible message upward/downward
+copy it
+paste into Notes/TextEdit/Google Doc
+Repeat in chunks until you have the important parts.
+
+If the sidebar is completely frozen and won’t select/copy:
+
+Take screenshots of the visible chat:
+Mac: Command + Shift + 5
+choose screenshot area
+capture the sidebar
+Scroll if possible and repeat screenshots.
+Then refresh only after you’ve saved screenshots/copy.
+
+Important: the GitHub code is safe. The only risk is losing the chat/sidebar history, not your repo. The frozen chat is like a raccoon in a garage: don’t scare it, just slowly extract what you can.
+
+I'm talking to you in askchat, can I ask you step 6 here? 
+
+Yes. You’re already successfully talking to me in a fresh Ask Chat right now. That means you’ve effectively recovered.
+
+So now do this:
+
+Leave the frozen Ask Chat alone for the moment.
+Continue here instead.
+Tell me:
+what file you were editing
+what the very next thing was you wanted to do
+
+I already have a pretty solid understanding of the app state from the live page:
+
+passport system
+admin dashboard
+QR flow
+business selector
+CSV export buttons
+mock login
+Marda Loop business list
+GitHub Pages deployment
+
+So we can continue without the dead sidebar history. Honestly, this happens a lot when giant code chats become the digital equivalent of a Costco parking lot on a Saturday.
+
+we had just updated the admin button but it wasn't fucntional yet and you were creatign a new script.js complete file for me to paste to give full admin functionality
+it doesn't seem to be working yet. Do I need to wait longer?
+
+Probably yes. I can already see the new script.js committed to GitHub:
+
+Latest commit:
+updating admin functionality
+Commit ID:
+cbd43ea
+
+So your code DID upload successfully. That’s the important part.
+
+Now GitHub Pages needs a minute or two to redeploy the live site. Sometimes it’s 30 seconds, sometimes a couple minutes because GitHub likes dramatic suspense.
+
+Do this:
+
+Wait about 1–2 minutes.
+Open:
+Community Passport Live Site
+HARD refresh:
+Mac: Cmd + Shift + R
+
+Then test:
+
+Click Admin
+Enter:
+loopadmin
+
+If it STILL doesn’t work after 2–3 minutes:
+
+Go to:
+
+GitHub repo → “Actions”
+
+You should see whether deployment succeeded or failed.
+
+Right now I can already see this was committed properly, so odds are high it’s just deployment/cache delay, not lost work. GitHub Pages caching is sometimes powered by hamsters and emotional resilience.
+
+Yes. At this point it’s almost certainly index.html, not waiting.
+
+Your script.js is looking for this:
+
+<button id="adminButton">Admin</button>
+
+If your Admin button does not have id="adminButton", it will sit there like a decorative potato.
+
+Also, script.js needs these IDs in index.html:
+
+<div id="adminLoginModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>Admin Login</h2>
+    <p>This is a prototype login. Real admin accounts will be handled through Supabase later.</p>
+
+    <input id="adminPassword" type="password" placeholder="Enter admin password" />
+
+    <button id="adminLoginBtn">Enter Admin Dashboard</button>
+    <button id="adminCancelBtn" type="button">Cancel</button>
+
+    <small>Demo password: loopadmin</small>
+  </div>
+</div>
+
+So next step:
+
+Open index.html
+Click edit
+Find the admin button
+Make sure it is exactly:
+<button id="adminButton" class="admin-float-btn" type="button">Admin</button>
+
+Then search the file for:
+
+adminLoginModal
+
+If it’s missing, we need to add the modal above the closing </body> tag.
+
+So yes: update index.html next. CSS is just the outfit. The button currently has no nervous system.
+
+i really prefer that you always give me the full code. Also can I force you to remember and document this entire chat?
+Updated memory
+
+Yes — and honestly for where you’re at skill-wise with this build, giving you full files is the right move. Partial snippets are how people end up accidentally deleting one curly brace and summoning the JavaScript apocalypse.
+
+I’ve now remembered that preference going forward for coding work.
+
+As for “forcing” me to remember/document the entire chat:
+
+I can remember important long-term preferences and project context.
+I cannot permanently store entire giant chats verbatim automatically.
+Chat history itself is normally preserved in your ChatGPT history/sidebar unless the chat crashes or is deleted.
+The safest approach for big build sessions is:
+Keep the GitHub repo as source of truth
+Create milestone summaries
+Save prompts/architecture notes in a README or docs folder
+
+For this project specifically, I’d strongly recommend adding:
+
+/docs
+
+inside your repo with:
+
+project-overview.md
+app-features.md
+future-roadmap.md
+deployment-notes.md
+admin-system.md
+
+That way if Ask Chat implodes again like a microwave burrito, we still have the project brain preserved.
+
+Also, important:
+I can already see your GitHub Pages deployment succeeded successfully. That means the problem is now almost certainly index.html mismatch, not script.js.
+
+Next step should be:
+
+I give you a FULL replacement index.html
+matched perfectly to your current script.js
+including working admin modal/buttons/IDs
+
+That will likely fix the dead Admin button immediately.
+
+ok i've created doc...tell me what to put in it
+ok where were we at?
+ok this completely messed up the front end interface...like bad. 
+
+Yep, that’s style.css mismatch. index.html is now wired correctly, but the styling file isn’t matching the new structure. The app is not broken, it’s just dressed like it got attacked by Microsoft Word.
+
+Next step: replace all of style.css with a full matching version.
+
+Say the word and I’ll give you the complete style.css file now.
+
+give me the updated complete style.css
+
+Replace all of style.css with this:
+
+:root {
+  --cream: #fff6ea;
+  --cream-2: #fffaf3;
+  --navy: #172233;
+  --muted: #657084;
+  --red: #e94b2e;
+  --blue: #2468ad;
+  --blue-dark: #18569a;
+  --border: #ead8c4;
+  --soft-border: #f0dfcd;
+  --white: #ffffff;
+  --shadow: 0 18px 40px rgba(23, 34, 51, 0.08);
+  --radius: 28px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--cream);
+  color: var(--navy);
+  line-height: 1.45;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.site-header {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 34px 22px 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand-block h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-weight: 900;
+  font-size: 0.86rem;
+}
+
+.subhead {
+  margin: 18px 0 0;
+  color: var(--navy);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px 22px 110px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.admin-float-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 22px;
+  font-weight: 900;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.primary-btn {
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 0 6px 0 var(--red);
+}
+
+.primary-btn:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  background: var(--white);
+  color: var(--blue-dark);
+  border: 2px solid #bdd5ef;
+}
+
+.secondary-btn:hover {
+  background: #f3f8ff;
+  transform: translateY(-1px);
+}
+
+.ghost-btn {
+  background: #fff3e6;
+  color: var(--red);
+  border: 1px solid var(--soft-border);
+}
+
+.ghost-btn:hover {
+  background: #ffe9d6;
+}
+
+.bottom-nav {
+  max-width: 1180px;
+  margin: 0 auto 14px;
+  padding: 0 22px;
+  display: flex;
+  gap: 10px;
+}
+
+.bottom-nav .tab {
+  border: 0;
+  background: var(--cream-2);
+  color: var(--muted);
+  padding: 15px 20px;
+  border-radius: 18px;
+  font-weight: 900;
+}
+
+.bottom-nav .tab.active {
+  color: var(--red);
+  background: var(--white);
+  box-shadow: inset 0 -5px 0 var(--red);
+}
+
+.campaign-card,
+.reward-card,
+.admin-panel,
+.scan-result-card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--soft-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.campaign-card {
+  padding: clamp(24px, 4vw, 44px);
+}
+
+.campaign-card h2,
+.reward-card h2,
+.admin-header h2 {
+  margin: 0 0 20px;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+}
+
+.participant-card {
+  margin: 22px 0;
+  padding: 22px;
+  background: var(--cream-2);
+  border-radius: 24px;
+  border: 1px solid var(--soft-border);
+}
+
+.participant-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.55rem;
+}
+
+.participant-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.progress-card {
+  margin: 22px 0 30px;
+  padding: 22px;
+  background: var(--white);
+  border-radius: 24px;
+  border: 1px solid var(--soft-border);
+}
+
+.progress-topline {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.progress-topline strong {
+  font-size: 1.4rem;
+}
+
+.progress-track {
+  height: 14px;
+  border-radius: 999px;
+  background: #f0e3d7;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--blue));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stamp {
+  min-height: 130px;
+  padding: 24px;
+  background: var(--white);
+  border: 2px dashed #e6d2bd;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stamp strong {
+  font-size: 1.22rem;
+}
+
+.stamp span {
+  color: var(--muted);
+}
+
+.stamp.collected {
+  border-style: solid;
+  border-color: var(--blue);
+  background: #f2f8ff;
+}
+
+.reward-card {
+  margin-top: 28px;
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.reward-list {
+  display: grid;
+  gap: 12px;
+}
+
+.reward {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 20px;
+  background: var(--cream-2);
+  border: 1px solid var(--soft-border);
+  border-radius: 18px;
+}
+
+.reward strong {
+  font-size: 1.08rem;
+}
+
+.reward span,
+.reward small,
+.muted {
+  color: var(--muted);
+}
+
+.reward.unlocked {
+  background: #f2f8ff;
+  border-color: #bdd5ef;
+}
+
+.scan-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.scan-result-card {
+  padding: 22px;
+  margin-bottom: 24px;
+}
+
+.scan-result-card h3 {
+  margin: 0 0 8px;
+}
+
+.scan-result-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+#scanResult[data-status="success"] {
+  color: #14733c;
+  font-weight: 900;
+}
+
+#scanResult[data-status="duplicate"] {
+  color: #a66a00;
+  font-weight: 900;
+}
+
+#scanResult[data-status="error"] {
+  color: #b42318;
+  font-weight: 900;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--soft-border);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.admin-panel {
+  padding: 24px;
+  margin-bottom: 22px;
+}
+
+.admin-panel h3 {
+  margin: 0 0 14px;
+  font-size: 1.45rem;
+}
+
+.panel-header {
+  margin-bottom: 14px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--soft-border);
+  background: var(--white);
+  color: var(--navy);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(36, 104, 173, 0.12);
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 0 16px;
+}
+
+.business-directory {
+  max-height: 520px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.business-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: var(--cream-2);
+  border: 1px solid var(--soft-border);
+  border-radius: 16px;
+}
+
+.business-row input {
+  margin-top: 5px;
+  transform: scale(1.2);
+}
+
+.business-row strong,
+.business-row small {
+  display: block;
+}
+
+.business-row small {
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.qr-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.qr-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  background: var(--cream-2);
+  border: 1px solid var(--soft-border);
+  border-radius: 16px;
+}
+
+.qr-row strong,
+.qr-row small {
+  display: block;
+}
+
+.qr-row small {
+  color: var(--muted);
+  word-break: break-all;
+  margin-top: 3px;
+}
+
+.qr-row button,
+.admin-user-row button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue);
+  color: var(--white);
+  padding: 10px 14px;
+  font-weight: 900;
+}
+
+.faux-map {
+  position: relative;
+  min-height: 320px;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(36, 104, 173, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(36, 104, 173, 0.08) 1px, transparent 1px),
+    #f5eadc;
+  background-size: 44px 44px;
+  border: 1px solid var(--soft-border);
+}
+
+.pin {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  border-radius: 50% 50% 50% 8px;
+  rotate: -45deg;
+  background: var(--red);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(233, 75, 46, 0.25);
+}
+
+.pin::after {
+  content: attr(title);
+  position: absolute;
+  left: 26px;
+  top: -6px;
+  rotate: 45deg;
+  min-width: 120px;
+  background: var(--white);
+  color: var(--navy);
+  border: 1px solid var(--soft-border);
+  border-radius: 12px;
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pin:hover::after {
+  opacity: 1;
+}
+
+.email-history,
+.admin-user-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.email-row,
+.admin-user-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  background: var(--cream-2);
+  border: 1px solid var(--soft-border);
+  border-radius: 16px;
+}
+
+.email-row strong,
+.email-row small,
+.admin-user-row strong,
+.admin-user-row small {
+  display: block;
+}
+
+.email-row small,
+.admin-user-row small {
+  color: var(--muted);
+}
+
+.admin-float-btn {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 80;
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 14px 30px rgba(23, 34, 51, 0.22);
+}
+
+.admin-float-btn:hover {
+  transform: translateY(-2px);
+  background: var(--red);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(23, 34, 51, 0.55);
+  backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: min(100%, 520px);
+  background: var(--cream-2);
+  color: var(--navy);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--soft-border);
+}
+
+.modal-card h2 {
+  margin: 0 0 10px;
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.modal-card p {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 820px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .stamp-grid,
+  .admin-grid,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reward {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-card h2,
+  .reward-card h2,
+  .admin-header h2 {
+    font-size: 3rem;
+  }
+
+  .admin-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .qr-row,
+  .email-row,
+  .admin-user-row {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .bottom-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--cream);
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header,
+  main,
+  .bottom-nav {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .ghost-btn {
+    width: 100%;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+
+  .admin-float-btn {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .campaign-card,
+  .reward-card,
+  .admin-panel {
+    border-radius: 22px;
+  }
+}
+
+Commit message:
+
+Replace stylesheet to match updated app structure
+
+Then hard refresh the live app. This should bring the interface back from “sad spreadsheet” to “actual app.”
+
+Ok please we need to update the fonts as they are weird now and there's an ugly drop shadow. The app doesn't look as cool and modern as it did. Also I have the Social Sundays PNG how do i put that in github and have the code updated to display the social sundays on the top and the marda loop logo less prominent
+
+Yes. Don’t touch code yet. First upload the PNG.
+
+Step 1: Upload the PNG to GitHub
+In your repo, click Add file
+Click Upload files
+Drag in your Social Sundays PNG
+Rename it if possible to:
+social-sundays.png
+Commit it.
+
+Ideally later we’ll make an /assets folder, but for now simplest is fine: put it in the main repo beside index.html.
+
+Step 2: Then I’ll update full files
+
+Once it’s uploaded, I’ll give you:
+
+Full updated index.html
+Full updated style.css
+
+Changes I’ll make:
+
+Put the Social Sundays PNG prominently at the top
+Make The Loop Social / Marda Loop branding smaller and less dominant
+Fix the weird font feel
+Remove/reduce the ugly drop shadows
+Restore a cooler, cleaner, modern app look
+Keep all current admin wiring intact
+
+Use this filename exactly if you can:
+
+social-sundays.png
+
+Then tell me once it’s uploaded.
+
+where can i find the logos i just put in github
+
+Yes. Replace both full files.
+
+Start with index.html, then style.css.
+
+Because both are long, I’ll send them one at a time so GitHub doesn’t turn into soup.
+
+Replace all of index.html with this first
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Loop Social | Community Passport</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="hero-branding">
+      <div class="logo-stack">
+        <img src="social-sundays.png" alt="Social Sundays" class="social-logo" />
+        <img src="marda-loop.png" alt="Marda Loop" class="marda-logo" />
+      </div>
+
+      <div class="hero-copy">
+        <p class="eyebrow">Community Passport Experience</p>
+        <h1>Explore Marda Loop</h1>
+        <p class="subhead">Scan local businesses, collect stamps, unlock prizes, and discover the community.</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="primary-btn tab active" type="button" data-tab="passport">View Passport</button>
+      <button class="secondary-btn tab" type="button" data-tab="scan">Test QR Scan</button>
+    </div>
+  </header>
+
+  <nav class="bottom-nav">
+    <button class="tab active" type="button" data-tab="passport">Passport</button>
+    <button class="tab" type="button" data-tab="scan">QR Scan</button>
+  </nav>
+
+  <main>
+    <section id="passport" class="page active">
+      <div class="campaign-card">
+        <p class="eyebrow">Social Sundays · June 2026</p>
+        <h2>Your Digital Passport</h2>
+
+        <button id="resetParticipantBtn" class="ghost-btn" type="button">Reset Demo</button>
+
+        <div class="participant-card">
+          <h3 id="participantName">Guest participant</h3>
+          <p id="participantMeta">Register once, then scan QR codes to collect stamps.</p>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-topline">
+            <strong id="progressCount">0/6</strong>
+          </div>
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <div id="stampGrid" class="stamp-grid"></div>
+      </div>
+
+      <div class="reward-card">
+        <h2>Prize Eligibility</h2>
+        <div id="rewardList" class="reward-list"></div>
+      </div>
+    </section>
+
+    <section id="scan" class="page">
+      <div class="campaign-card">
+        <h2>QR Testing</h2>
+
+        <div class="scan-result-card">
+          <h3>Scan Result</h3>
+          <p id="scanResult">Open a QR URL or use the test buttons below.</p>
+        </div>
+
+        <h3>Manual QR Simulation</h3>
+        <p class="muted">Use these buttons to simulate scanning a business QR code.</p>
+
+        <div id="scanButtons" class="scan-buttons"></div>
+      </div>
+    </section>
+
+    <section id="admin" class="page">
+      <div class="admin-header">
+        <div>
+          <p class="eyebrow">Admin Dashboard</p>
+          <h2>Social Sundays Setup</h2>
+        </div>
+
+        <button id="adminLogoutBtn" class="ghost-btn" type="button">Log Out</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <strong id="directoryCount">0</strong>
+          <span>Directory businesses</span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="selectedCount">0</strong>
+          <span>Selected businesses</span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="participantCount">0</strong>
+          <span>Participants</span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="stampCount">0</strong>
+          <span>Total stamps</span>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        <section class="admin-panel">
+          <div class="panel-header">
+            <h3>Business Directory</h3>
+          </div>
+
+          <input id="businessSearch" class="input" type="text" placeholder="Search businesses..." />
+
+          <div class="button-row">
+            <button id="selectAllBtn" class="secondary-btn" type="button">Select All</button>
+            <button id="clearAllBtn" class="ghost-btn" type="button">Clear All</button>
+          </div>
+
+          <div id="businessDirectory" class="business-directory"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-header">
+            <h3>Selected QR URLs</h3>
+            <p class="muted">These are the URLs you’ll turn into QR codes.</p>
+          </div>
+
+          <div id="qrList" class="qr-list"></div>
+
+          <div class="button-row">
+            <button id="exportQrBtn" class="secondary-btn" type="button">Export QR URLs CSV</button>
+            <button id="exportDataBtn" class="secondary-btn" type="button">Export Participant Data CSV</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="admin-panel">
+        <h3>Selected Business Map</h3>
+        <div id="fauxMap" class="faux-map"></div>
+      </section>
+
+      <div class="admin-grid">
+        <section class="admin-panel">
+          <h3>Contest Email</h3>
+
+          <input id="emailSubject" class="input" type="text" placeholder="Email subject" />
+          <textarea id="emailBody" class="textarea" placeholder="Email message"></textarea>
+
+          <button id="sendEmailBtn" class="primary-btn" type="button">Simulate Send</button>
+
+          <div id="emailHistory" class="email-history"></div>
+        </section>
+
+        <section class="admin-panel">
+          <h3>Admin Users</h3>
+          <p class="muted">Prototype admin roles. These will move to Supabase auth later.</p>
+
+          <input id="adminName" class="input" type="text" placeholder="Admin name" />
+          <input id="adminEmail" class="input" type="email" placeholder="Admin email" />
+
+          <select id="adminRole" class="input">
+            <option value="master" selected>Master Admin</option>
+            <option value="event">Event Admin</option>
+            <option value="viewer">Viewer / Export Only</option>
+          </select>
+
+          <button id="addAdminBtn" class="secondary-btn" type="button">Add Admin User</button>
+
+          <div id="adminUserList" class="admin-user-list"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <button id="adminButton" class="admin-float-btn" type="button">Admin</button>
+
+  <div id="registrationModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Join The Loop Social</h2>
+      <p>Enter your details once to start collecting stamps.</p>
+
+      <input id="regName" class="input" type="text" placeholder="Full name" />
+      <input id="regEmail" class="input" type="email" placeholder="Email address" />
+      <input id="regPostal" class="input" type="text" placeholder="Postal code" />
+
+      <button id="registerBtn" class="primary-btn" type="button">Start Passport</button>
+    </div>
+  </div>
+
+  <div id="adminLoginModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Admin Login</h2>
+      <p>This is a prototype login. Real admin accounts will be handled through Supabase later.</p>
+
+      <input id="adminPassword" class="input" type="password" placeholder="Enter admin password" />
+
+      <div class="button-row">
+        <button id="adminLoginBtn" class="primary-btn" type="button">Enter Admin Dashboard</button>
+        <button id="adminCancelBtn" class="ghost-btn" type="button">Cancel</button>
+      </div>
+
+      <small class="muted">Demo password: loopadmin</small>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+Commit that as:
+
+Update index with event branding logos
+
+Then tell me when it’s committed and I’ll give you the full style.css next.
+
+ok that's done
+
+Great. Now replace all of style.css next.
+
+I’ll give you the full complete file in the next message so it’s clean and copyable.
+
+yes give me the full style.css now
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg: #f7f3ee;
+  --card: #ffffff;
+  --text: #18202b;
+  --muted: #667085;
+
+  --red: #e84d2a;
+  --blue: #2764a8;
+  --blue-dark: #1d4f88;
+
+  --border: #ebe2d8;
+
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.04);
+
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+.site-header {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 42px 24px 18px;
+}
+
+.hero-branding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  margin-bottom: 30px;
+}
+
+.logo-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.social-logo {
+  width: 320px;
+  max-width: 100%;
+}
+
+.marda-logo {
+  width: 120px;
+  opacity: 0.7;
+}
+
+.hero-copy {
+  flex: 1;
+  max-width: 640px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 5.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.08em;
+  font-weight: 900;
+}
+
+.subhead {
+  margin: 22px 0 0;
+  max-width: 560px;
+  font-size: 1.12rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.admin-float-btn {
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+.primary-btn {
+  background: var(--blue);
+  color: white;
+}
+
+.primary-btn:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  background: white;
+  color: var(--blue);
+  border: 1px solid #d5e3f4;
+}
+
+.secondary-btn:hover {
+  background: #f7fbff
