@@ -177,7 +177,7 @@ function collectStamp(businessId) {
 
   if (!business) {
     setScanMessage("Business not found. Please check the QR code.", "error");
-    showTab("scan");
+    showTab("passport");
     return;
   }
 
@@ -207,7 +207,7 @@ function collectStamp(businessId) {
       setScanMessage(`Stamp collected at ${business.name}!`, "success");
     }
 
-    showTab("scan");
+    showTab("passport");
     renderAll();
   });
 }
