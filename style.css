@@ -330,27 +330,58 @@ main {
   border: 1px solid #cce9d2;
 }
 
-.stamp-check {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: #2f9e44;
-  line-height: 1;
-  margin-bottom: 6px;
+.stamp-status {
+  min-width: 104px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  text-align: center;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-..stamp-camera {
-  font-size: 1.25rem;
+.pending-status {
+  background: linear-gradient(135deg, #ffffff, #f3f8ff);
+  border-color: #cfe0f4;
+  color: var(--blue);
+  box-shadow: 0 8px 18px rgba(39, 100, 168, 0.08);
+}
+
+.pending-status:hover {
+  background: var(--blue);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.collected-status {
+  background: linear-gradient(135deg, #effaf2, #ffffff);
+  border-color: #bfe7c7;
+  color: #237a3b;
+  box-shadow: 0 8px 18px rgba(47, 158, 68, 0.08);
+}
+
+.stamp-check,
+.stamp-camera {
+  font-size: 1rem;
   line-height: 1;
-  margin-bottom: 6px;
+  font-weight: 900;
 }
 
 .stamp-status small {
   display: block;
   font-size: 0.72rem;
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--text);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: currentColor;
 }
 
 .stamp-bottom {
