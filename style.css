@@ -763,7 +763,36 @@ main {
     padding-left: 16px;
     padding-right: 16px;
   }
+.stamp-top {
+  flex-direction: column;
+}
 
+.stamp-status {
+  width: 100%;
+  min-width: unset;
+  justify-content: center;
+  padding: 14px 18px;
+  margin-top: 4px;
+}
+
+.stamp-business {
+  width: 100%;
+}
+
+.stamp-business strong {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.stamp-business span {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.stamp-qr {
+  width: 20px;
+  height: 20px;
+}
   .social-logo {
     width: min(330px, 92vw);
   }
