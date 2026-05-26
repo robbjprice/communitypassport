@@ -94,7 +94,29 @@
           <span>Total stamps</span>
         </div>
       </div>
+<section class="admin-panel">
+  <h3>Add Businesses</h3>
+  <p class="muted">Add one business manually or upload a completed CSV template.</p>
 
+  <input id="newBusinessName" class="input" type="text" placeholder="Business name" />
+  <input id="newBusinessType" class="input" type="text" placeholder="Category, e.g. Coffee, Retail, Restaurant" />
+  <input id="newBusinessAddress" class="input" type="text" placeholder="Address" />
+
+  <button id="addBusinessBtn" class="primary-btn" type="button">
+    Add Business
+  </button>
+
+  <div class="button-row">
+    <button id="downloadBusinessTemplateBtn" class="secondary-btn" type="button">
+      Download CSV Template
+    </button>
+
+    <label class="secondary-btn upload-btn">
+      Upload Business CSV
+      <input id="businessCsvUpload" type="file" accept=".csv" hidden />
+    </label>
+  </div>
+</section>
       <div class="admin-grid">
         <section class="admin-panel">
           <div class="panel-header">
