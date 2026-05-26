@@ -314,7 +314,7 @@ function renderPassport() {
               ? `
                 <div class="stamp-status collected-status">
                  <div class="stamp-check">✓</div>
-<small>Done</small>
+<small>Collected</small>
                 </div>
               `
               : `
