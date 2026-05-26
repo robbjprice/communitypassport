@@ -772,6 +772,37 @@ main {
     font-size: 2rem;
   }
 }
+.consent-box {
+  margin-top: 18px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.consent-check input {
+  margin-top: 3px;
+  transform: scale(1.08);
+}
+
+.consent-note {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #64748b;
+}
 .camera-demo-modal {
   position: fixed;
   inset: 0;
