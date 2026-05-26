@@ -67,12 +67,11 @@ const defaultSelected = [
 ];
 
 const rewardTiers = [
-  { count: 1, title: "Weekly Prize Entry", description: "You are entered into the weekly draw." },
-  { count: 3, title: "Bonus Prize Entry", description: "You unlocked an extra prize entry." },
-  { count: 5, title: "Grand Prize Entry", description: "You qualify for the grand prize draw." },
-  { count: "all", title: "Full Passport Badge", description: "You completed every selected stop." },
+  { count: 1, title: "Weekly Prize Entry", description: "Collect 1 stamp to earn a weekly prize entry." },
+  { count: 3, title: "Bonus Prize Entry", description: "Collect 3 stamps to unlock an extra prize entry." },
+  { count: 5, title: "Grand Prize Entry", description: "Collect 5 stamps to qualify for the grand prize draw." },
+  { count: "all", title: "$1,000 Marda Loop Shopping Spree", description: "Complete your full passport to qualify for the $1,000 Marda Loop shopping spree." },
 ];
-
 let participant = getJSON(STORAGE.participant, null);
 let stamps = getJSON(STORAGE.stamps, []);
 let selectedBusinessIds = getJSON(STORAGE.selected, defaultSelected);
@@ -364,11 +363,24 @@ scanButton?.addEventListener("click", (event) => {
       const reward = document.createElement("div");
       reward.className = `reward ${unlocked ? "unlocked" : ""}`;
 
-      reward.innerHTML = `
-        <strong>${tier.title}</strong>
-        <span>${tier.description}</span>
-        <small>${unlocked ? "Unlocked" : `${needed} stamp${needed === 1 ? "" : "s"}`}</small>
-      `;
+      const progressText = `${Math.min(count, needed)}/${needed} completed`;
+const progressPercent = Math.min(100, Math.round((count / needed) * 100));
+
+reward.innerHTML = `
+  <div>
+    <strong>${tier.title}</strong>
+    <span>${tier.description}</span>
+  </div>
+
+  <div class="reward-progress">
+    <div class="reward-progress-top">
+      <small>${unlocked ? "Unlocked" : progressText}</small>
+    </div>
+    <div class="reward-progress-track">
+      <div class="reward-progress-fill" style="width: ${progressPercent}%"></div>
+    </div>
+  </div>
+`;
 
       rewardList.appendChild(reward);
     });
