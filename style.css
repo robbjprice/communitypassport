@@ -703,9 +703,15 @@ main {
 
 .postal-row {
   display: grid;
-  grid-template-columns: 82px 1fr 52px;
-  gap: 12px;
+  grid-template-columns: minmax(190px, 1.2fr) 1.8fr 44px;
+  gap: 16px;
   align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.postal-row:last-child {
+  border-bottom: 0;
 }
 
 .postal-prefix {
@@ -713,10 +719,11 @@ main {
   color: var(--text);
 }
 .postal-area {
-  margin-top: 2px;
+  margin-top: 4px;
   color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.25;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  max-width: 230px;
 }
 .postal-bar-track {
   height: 14px;
@@ -734,7 +741,7 @@ main {
 .postal-count {
   color: var(--muted);
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 900;
   text-align: right;
 }
 .pin {
