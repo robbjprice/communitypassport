@@ -402,9 +402,29 @@ main {
 }
 
 .map-hint {
+  width: 100%;
+  min-width: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffffff, #f3f8ff);
+  border: 1px solid #cfe0f4;
   color: var(--blue);
-  font-weight: 800;
-  font-size: 0.82rem;
+  box-shadow: 0 8px 18px rgba(39, 100, 168, 0.08);
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.map-hint:hover {
+  background: var(--blue);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .reward-card {
