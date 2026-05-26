@@ -65,13 +65,27 @@ const defaultSelected = [
   "big-fish-open-range",
   "cobs-bread",
 ];
-
+const demoParticipants = [
+  { name: "Ava Chen", email: "ava@example.com", postalCode: "T2T 1A1", stamps: 6 },
+  { name: "Liam Johnson", email: "liam@example.com", postalCode: "T2T 2B2", stamps: 5 },
+  { name: "Sofia Patel", email: "sofia@example.com", postalCode: "T3E 1C3", stamps: 4 },
+  { name: "Noah Williams", email: "noah@example.com", postalCode: "T2V 3K4", stamps: 3 },
+  { name: "Mia Brown", email: "mia@example.com", postalCode: "T2N 4P8", stamps: 2 },
+  { name: "Ethan Lee", email: "ethan@example.com", postalCode: "T3H 5L2", stamps: 1 },
+  { name: "Olivia Martin", email: "olivia@example.com", postalCode: "T4B 0A2", stamps: 5 },
+  { name: "Lucas Wilson", email: "lucas@example.com", postalCode: "T4C 1M2", stamps: 3 },
+  { name: "Emma Garcia", email: "emma@example.com", postalCode: "T1S 1A4", stamps: 6 },
+  { name: "Jack Thompson", email: "jack@example.com", postalCode: "T0M 0W0", stamps: 2 },
+  { name: "Harper Scott", email: "harper@example.com", postalCode: "T2G 0A1", stamps: 4 },
+  { name: "Benjamin Clark", email: "ben@example.com", postalCode: "T2P 3N4", stamps: 1 },
+];
 const rewardTiers = [
   { count: 1, title: "Weekly Prize Entry", description: "Collect 1 stamp to earn a weekly prize entry." },
   { count: 3, title: "Bonus Prize Entry", description: "Collect 3 stamps to unlock an extra prize entry." },
   { count: 5, title: "Grand Prize Entry", description: "Collect 5 stamps to qualify for the grand prize draw." },
   { count: "all", title: "$1,000 Marda Loop Shopping Spree", description: "Complete your full passport to qualify for the $1,000 Marda Loop shopping spree." },
 ];
+
 let participant = getJSON(STORAGE.participant, null);
 let stamps = getJSON(STORAGE.stamps, []);
 let selectedBusinessIds = getJSON(STORAGE.selected, defaultSelected);
@@ -415,12 +429,86 @@ function renderAdmin() {
   if ($("stampCount")) $("stampCount").textContent = stampsForCampaign().length;
 
   renderBusinessDirectory();
-  renderQrList();
-  renderMap();
-  renderEmailHistory();
-  renderAdminUsers();
+
+renderQrList();
+
+renderMap();
+
+renderEmailHistory();
+
+renderAdminUsers();
+
+renderPrizeQualifications();
+
+renderPostalHeatMap();
+
+}
+function renderPrizeQualifications() {
+  const container = $("prizeQualificationList");
+  if (!container) return;
+
+  const tiers = [
+    { title: "Weekly Prize Entry", needed: 1 },
+    { title: "Bonus Prize Entry", needed: 3 },
+    { title: "Grand Prize Entry", needed: 5 },
+    { title: "$1,000 Marda Loop Shopping Spree", needed: selectedBusinessIds.length },
+  ];
+
+  container.innerHTML = "";
+
+  tiers.forEach((tier) => {
+    const qualified = demoParticipants.filter((person) => person.stamps >= tier.needed);
+
+    const block = document.createElement("div");
+    block.className = "qualification-tier";
+
+    block.innerHTML = `
+      <h4>${tier.title} · ${qualified.length} qualified</h4>
+      ${
+        qualified.length
+          ? qualified.map((person) => `
+              <div class="qualified-person">
+                <strong>${person.name}</strong>
+                <span>${person.email}</span>
+                <span>${person.postalCode} · ${person.stamps}/${selectedBusinessIds.length} stamps</span>
+              </div>
+            `).join("")
+          : `<p class="muted">No participants have qualified yet.</p>`
+      }
+    `;
+
+    container.appendChild(block);
+  });
 }
 
+function renderPostalHeatMap() {
+  const container = $("postalHeatMap");
+  if (!container) return;
+
+  const counts = {};
+
+  demoParticipants.forEach((person) => {
+    const prefix = person.postalCode.split(" ")[0].toUpperCase();
+    counts[prefix] = (counts[prefix] || 0) + 1;
+  });
+
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(...entries.map((entry) => entry[1]), 1);
+
+  container.innerHTML = entries.map(([prefix, count]) => {
+    const width = Math.round((count / max) * 100);
+
+    return `
+      <div class="postal-row">
+        <div class="postal-prefix">${prefix}</div>
+        <div class="postal-bar-track">
+          <div class="postal-bar-fill" style="width: ${width}%"></div>
+        </div>
+        <div class="postal-count">${count}</div>
+      </div>
+    `;
+  }).join("");
+}
 function renderBusinessDirectory() {
   const list = $("businessDirectory");
   if (!list) return;
