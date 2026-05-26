@@ -313,8 +313,8 @@ function renderPassport() {
             collectedHere
               ? `
                 <div class="stamp-status collected-status">
-                  <div class="stamp-check">✓</div>
-                  <small>Collected</small>
+                 <div class="stamp-check">✓</div>
+<small>Done</small>
                 </div>
               `
               : `
