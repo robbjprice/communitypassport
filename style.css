@@ -367,11 +367,24 @@ main {
   box-shadow: 0 8px 18px rgba(47, 158, 68, 0.08);
 }
 
-.stamp-check,
-.stamp-camera {
+.stamp-check {
   font-size: 1rem;
   line-height: 1;
   font-weight: 900;
+}
+
+.stamp-qr {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.stamp-qr span {
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.95;
 }
 
 .stamp-status small {
