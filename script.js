@@ -319,9 +319,9 @@ function renderPassport() {
               `
               : `
                 <button class="stamp-status pending-status" type="button" aria-label="Scan QR code for ${business.name}">
-                  <div class="stamp-camera">+</div>
-<small>Stamp</small>
-                </button>
+  <div class="stamp-camera">+</div>
+  <small>Collect</small>
+</button>
               `
           }
         </div>
