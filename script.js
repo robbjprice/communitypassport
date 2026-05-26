@@ -443,12 +443,27 @@ function saveBusinesses() {
 function addBusiness() {
   const name = $("newBusinessName")?.value.trim();
   const type = $("newBusinessType")?.value.trim();
-  const address = $("newBusinessAddress")?.value.trim();
 
-  if (!name || !type || !address) {
-    alert("Please enter business name, category, and address.");
+  const address1 = $("newBusinessAddress1")?.value.trim();
+  const address2 = $("newBusinessAddress2")?.value.trim();
+  const city = $("newBusinessCity")?.value.trim();
+  const province = $("newBusinessProvince")?.value.trim();
+  const postal = $("newBusinessPostal")?.value.trim();
+
+  if (!name || !type || !address1 || !city || !province) {
+    alert("Please complete all required business fields.");
     return;
   }
+
+  const fullAddress = [
+    address1,
+    address2,
+    city,
+    province,
+    postal
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   const id = businessIdFromName(name);
 
@@ -461,7 +476,14 @@ function addBusiness() {
     id,
     name,
     type,
-    address,
+    address: fullAddress,
+
+    address1,
+    address2,
+    city,
+    province,
+    postal,
+
     lat: 51.023,
     lng: -114.112,
   });
@@ -475,11 +497,14 @@ function addBusiness() {
 
   $("newBusinessName").value = "";
   $("newBusinessType").value = "";
-  $("newBusinessAddress").value = "";
+  $("newBusinessAddress1").value = "";
+  $("newBusinessAddress2").value = "";
+  $("newBusinessCity").value = "Calgary";
+  $("newBusinessProvince").value = "AB";
+  $("newBusinessPostal").value = "";
 
   renderAll();
 }
-
 function downloadBusinessTemplate() {
   const rows = [
     ["name", "type", "address"],
