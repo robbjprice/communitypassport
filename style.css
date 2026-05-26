@@ -660,7 +660,78 @@ main {
   background-size: 44px 44px;
   border: 1px solid var(--border);
 }
+.qualification-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
 
+.qualification-tier {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.qualification-tier h4 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.qualified-person {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.qualified-person strong {
+  font-size: 0.95rem;
+}
+
+.qualified-person span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.postal-heat-map {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.postal-row {
+  display: grid;
+  grid-template-columns: 82px 1fr 52px;
+  gap: 12px;
+  align-items: center;
+}
+
+.postal-prefix {
+  font-weight: 900;
+  color: var(--text);
+}
+
+.postal-bar-track {
+  height: 14px;
+  border-radius: 999px;
+  background: #ebe5dd;
+  overflow: hidden;
+}
+
+.postal-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--red), var(--blue));
+}
+
+.postal-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: right;
+}
 .pin {
   position: absolute;
   width: 34px;
