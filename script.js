@@ -137,6 +137,12 @@ function registerParticipant() {
   const name = $("regName")?.value.trim();
   const email = $("regEmail")?.value.trim();
   const postal = $("regPostal")?.value.trim();
+  const consentAccepted = document.getElementById("consentCheckbox").checked;
+
+if (!consentAccepted) {
+  alert("Please review and accept the participation consent to continue.");
+  return;
+}
 
   if (!name || !email || !postal) {
     alert("Please enter your name, email, and postal code.");
