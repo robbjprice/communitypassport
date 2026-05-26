@@ -14,7 +14,7 @@ const STORAGE = {
   adminLoggedIn: "communityPassportAdminLoggedIn",
 };
 
-const businesses = [
+let businesses = getJSON("communityPassportBusinesses", [
   { id: "blush-lane", name: "Blush Lane Organic Market", type: "Grocery", address: "2044 33 Avenue SW", lat: 51.0242, lng: -114.1104 },
   { id: "phil-sebastian", name: "Phil & Sebastian", type: "Coffee", address: "2043 33 Avenue SW", lat: 51.0245, lng: -114.1101 },
   { id: "annabelles-kitchen", name: "Annabelle’s Kitchen", type: "Restaurant", address: "3574 Garrison Gate SW", lat: 51.0219, lng: -114.1169 },
@@ -55,7 +55,7 @@ const businesses = [
   { id: "modern-nails", name: "Modern Nails Marda Loop", type: "Beauty", address: "Marda Loop", lat: 51.0252, lng: -114.1151 },
   { id: "local-laundry", name: "Local Laundry", type: "Retail", address: "Marda Loop", lat: 51.0206, lng: -114.1107 },
   { id: "marda-loop-pilates", name: "Marda Loop Pilates", type: "Fitness", address: "Marda Loop", lat: 51.0262, lng: -114.1136 },
-];
+]);
 
 const defaultSelected = [
   "blush-lane",
@@ -428,7 +428,118 @@ function renderScanButtons() {
     scanButtons.appendChild(button);
   });
 }
+function businessIdFromName(name) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
+function saveBusinesses() {
+  setJSON("communityPassportBusinesses", businesses);
+}
+
+function addBusiness() {
+  const name = $("newBusinessName")?.value.trim();
+  const type = $("newBusinessType")?.value.trim();
+  const address = $("newBusinessAddress")?.value.trim();
+
+  if (!name || !type || !address) {
+    alert("Please enter business name, category, and address.");
+    return;
+  }
+
+  const id = businessIdFromName(name);
+
+  if (businesses.some((business) => business.id === id)) {
+    alert("That business already exists.");
+    return;
+  }
+
+  businesses.push({
+    id,
+    name,
+    type,
+    address,
+    lat: 51.023,
+    lng: -114.112,
+  });
+
+  selectedBusinessIds.push(id);
+  selectedBusinessIds = [...new Set(selectedBusinessIds)];
+
+  saveBusinesses();
+
+  setJSON(STORAGE.selected, selectedBusinessIds);
+
+  $("newBusinessName").value = "";
+  $("newBusinessType").value = "";
+  $("newBusinessAddress").value = "";
+
+  renderAll();
+}
+
+function downloadBusinessTemplate() {
+  const rows = [
+    ["name", "type", "address"],
+    ["Example Cafe", "Coffee", "1234 33 Avenue SW"],
+    ["Example Boutique", "Retail", "Marda Loop"],
+  ];
+
+  exportCSV("business-upload-template.csv", rows);
+}
+
+function uploadBusinessCsv(event) {
+  const file = event.target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const text = reader.result;
+
+    const lines = text.split(/\r?\n/).filter(Boolean);
+
+    const rows = lines.slice(1);
+
+    rows.forEach((line) => {
+      const [name, type, address] = line
+        .split(",")
+        .map((item) => item?.trim());
+
+      if (!name || !type || !address) return;
+
+      const id = businessIdFromName(name);
+
+      if (!businesses.some((business) => business.id === id)) {
+        businesses.push({
+          id,
+          name,
+          type,
+          address,
+          lat: 51.023,
+          lng: -114.112,
+        });
+
+        selectedBusinessIds.push(id);
+      }
+    });
+
+    selectedBusinessIds = [...new Set(selectedBusinessIds)];
+
+    saveBusinesses();
+
+    setJSON(STORAGE.selected, selectedBusinessIds);
+
+    event.target.value = "";
+
+    renderAll();
+  };
+
+  reader.readAsText(file);
+}
 function renderAdmin() {
   const adminPage = $("admin");
 
@@ -850,6 +961,7 @@ function wireEvents() {
       if (button.dataset.tab === "admin" && !adminLoggedIn) {
         openAdminLogin();
         return;
+        
       }
 
       showTab(button.dataset.tab);
@@ -860,7 +972,17 @@ function wireEvents() {
   $("resetParticipantBtn")?.addEventListener("click", resetDemo);
 
   $("businessSearch")?.addEventListener("input", renderBusinessDirectory);
+$("addBusinessBtn")?.addEventListener("click", addBusiness);
 
+$("downloadBusinessTemplateBtn")?.addEventListener(
+  "click",
+  downloadBusinessTemplate
+);
+
+$("businessCsvUpload")?.addEventListener(
+  "change",
+  uploadBusinessCsv
+);
   $("selectAllBtn")?.addEventListener("click", () => {
     selectedBusinessIds = businesses.map((business) => business.id);
     setJSON(STORAGE.selected, selectedBusinessIds);
