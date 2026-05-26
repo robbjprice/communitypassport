@@ -306,7 +306,7 @@ function renderPassport() {
         <div class="stamp-top">
           <div class="stamp-business">
             <strong>${business.name}</strong>
-            <span>${business.type} · ${business.address}</span>
+            <span>${business.address}</span>
           </div>
 
           ${
