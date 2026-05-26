@@ -98,13 +98,92 @@
   <h3>Add Businesses</h3>
   <p class="muted">Add one business manually or upload a completed CSV template.</p>
 
-  <input id="newBusinessName" class="input" type="text" placeholder="Business name" />
-  <input id="newBusinessType" class="input" type="text" placeholder="Category, e.g. Coffee, Retail, Restaurant" />
-  <input id="newBusinessAddress" class="input" type="text" placeholder="Address" />
+  <div class="admin-card">
+  <div class="section-heading">
+    <h3>Add Individual Business</h3>
+    <p>Add a participating business manually.</p>
+  </div>
+
+  <div class="business-form-grid">
+
+    <input
+      id="newBusinessName"
+      type="text"
+      placeholder="Business Name"
+    />
+
+    <select id="newBusinessType">
+      <option value="">Select Category</option>
+
+      <option>Coffee Shop</option>
+      <option>Restaurant</option>
+      <option>Bakery</option>
+      <option>Dessert</option>
+      <option>Bar / Pub</option>
+      <option>Brewery</option>
+      <option>Retail</option>
+      <option>Clothing</option>
+      <option>Beauty</option>
+      <option>Fitness</option>
+      <option>Yoga Studio</option>
+      <option>Health</option>
+      <option>Medical Clinic</option>
+      <option>Dental</option>
+      <option>Pharmacy</option>
+      <option>Pets</option>
+      <option>Veterinary</option>
+      <option>Grocery</option>
+      <option>Market</option>
+      <option>Liquor Store</option>
+      <option>Professional Services</option>
+      <option>Real Estate</option>
+      <option>Home Services</option>
+      <option>Salon</option>
+      <option>Spa</option>
+      <option>Entertainment</option>
+      <option>Hotel</option>
+      <option>Gas Station</option>
+      <option>Other</option>
+    </select>
+
+    <input
+      id="newBusinessAddress1"
+      type="text"
+      placeholder="Street Address 1"
+    />
+
+    <input
+      id="newBusinessAddress2"
+      type="text"
+      placeholder="Street Address 2 (Optional)"
+    />
+
+    <input
+      id="newBusinessCity"
+      type="text"
+      placeholder="City"
+      value="Calgary"
+    />
+
+    <input
+      id="newBusinessProvince"
+      type="text"
+      placeholder="Province"
+      value="AB"
+    />
+
+    <input
+      id="newBusinessPostal"
+      type="text"
+      placeholder="Postal Code"
+    />
+
+  </div>
 
   <button id="addBusinessBtn" class="primary-btn" type="button">
     Add Business
   </button>
+</div>
 
   <div class="button-row">
     <button id="downloadBusinessTemplateBtn" class="secondary-btn" type="button">
