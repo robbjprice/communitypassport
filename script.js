@@ -79,6 +79,19 @@ const demoParticipants = [
   { name: "Harper Scott", email: "harper@example.com", postalCode: "T2G 0A1", stamps: 4 },
   { name: "Benjamin Clark", email: "ben@example.com", postalCode: "T2P 3N4", stamps: 1 },
 ];
+const postalAreas = {
+  T2T: "Marda Loop / Altadore / South Calgary",
+  T3E: "Glendale / Westgate / Signal Hill area",
+  T2V: "Chinook Park / Haysboro / South Calgary",
+  T2N: "Kensington / Hillhurst / University area",
+  T3H: "West Springs / Aspen Woods / Signal Hill",
+  T4B: "Airdrie",
+  T4C: "Cochrane",
+  T1S: "Okotoks",
+  T0M: "Rural / surrounding communities",
+  T2G: "Beltline / Victoria Park / East Village area",
+  T2P: "Downtown Calgary",
+};
 const rewardTiers = [
   { count: 1, title: "Weekly Prize Entry", description: "Collect 1 stamp to earn a weekly prize entry." },
   { count: 3, title: "Bonus Prize Entry", description: "Collect 3 stamps to unlock an extra prize entry." },
@@ -498,15 +511,22 @@ function renderPostalHeatMap() {
   container.innerHTML = entries.map(([prefix, count]) => {
     const width = Math.round((count / max) * 100);
 
-    return `
-      <div class="postal-row">
-        <div class="postal-prefix">${prefix}</div>
-        <div class="postal-bar-track">
-          <div class="postal-bar-fill" style="width: ${width}%"></div>
-        </div>
-        <div class="postal-count">${count}</div>
-      </div>
-    `;
+    const area = postalAreas[prefix] || "Calgary / surrounding area";
+
+return `
+  <div class="postal-row">
+    <div>
+      <div class="postal-prefix">${prefix}</div>
+      <div class="postal-area">${area}</div>
+    </div>
+
+    <div class="postal-bar-track">
+      <div class="postal-bar-fill" style="width: ${width}%"></div>
+    </div>
+
+    <div class="postal-count">${count}</div>
+  </div>
+`;
   }).join("");
 }
 function renderBusinessDirectory() {
