@@ -1,3 +1,7 @@
+const SUPABASE_URL = "https://lpdatofxeivydxmjtbwg.supabase.co";
+const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const CAMPAIGN = {
   slug: "social-sundays",
   title: "Social Sundays",
