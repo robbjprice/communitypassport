@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://lpdatofxeivydxmjtbwg.supabase.co";
-const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_KEY = "sb_publishable_qhLcavWW3O0DLs4w22N9Sw_9JoEjHt2";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const CAMPAIGN = {
