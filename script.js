@@ -2,6 +2,16 @@ const SUPABASE_URL = "https://lpdatofxeivydxmjtbwg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_qhLcavWW3O0DLs4w22N9Sw_9JoEjHt2";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function testSupabaseConnection() {
+  const { data, error } = await supabaseClient
+    .from("campaigns")
+    .select("*");
+
+  console.log("SUPABASE TEST DATA:", data);
+  console.log("SUPABASE TEST ERROR:", error);
+}
+
+testSupabaseConnection();
 const CAMPAIGN = {
   slug: "social-sundays",
   title: "Social Sundays",
