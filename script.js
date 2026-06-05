@@ -250,6 +250,82 @@ async function registerParticipant() {
 
   renderAll();
 }
+async function collectStamp(businessId) {
+  const business = businesses.find((item) => item.id === businessId);
+
+  if (!business) {
+    setScanMessage("Business not found. Please check the QR code.", "error");
+    showTab("passport");
+    return;
+  }
+
+  requireParticipant(async () => {
+    const campaignId = participant.campaignId;
+
+    if (!campaignId || !business.supabaseId) {
+      console.error("Missing campaignId or business supabaseId", {
+        campaignId,
+        business,
+        participant,
+      });
+      setScanMessage("Missing campaign or business details. Please refresh and try again.", "error");
+      showTab("passport");
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("stamps")
+      .upsert(
+        {
+          campaign_id: campaignId,
+          participant_id: participant.id,
+          business_id: business.supabaseId,
+          scan_source: "qr-or-demo",
+          user_agent: navigator.userAgent,
+        },
+        {
+          onConflict: "campaign_id,participant_id,business_id",
+        }
+      )
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Stamp collection failed:", error);
+      setScanMessage("Stamp collection failed. Please try again.", "error");
+      showTab("passport");
+      return;
+    }
+
+    if (!stampExists(businessId)) {
+      stamps.push({
+        id: data.id,
+        campaign: CAMPAIGN.slug,
+        participantId: participant.id,
+        participantName: participant.name,
+        email: participant.email,
+        postalCode: participant.postalCode,
+        businessId,
+        businessName: business.name,
+        businessType: business.type,
+        scannedAt: data.scanned_at,
+        scanSource: "qr-or-demo",
+        userAgent: navigator.userAgent,
+      });
+
+      setJSON(STORAGE.stamps, stamps);
+      setScanMessage(`Stamp collected at ${business.name}!`, "success");
+    } else {
+      setScanMessage(`Already collected: ${business.name}`, "duplicate");
+    }
+
+    participant.lastSeenAt = new Date().toISOString();
+    setJSON(STORAGE.participant, participant);
+
+    showTab("passport");
+    renderAll();
+  });
+}
 function setScanMessage(message, status = "default") {
   const scanResult = $("scanResult");
   if (!scanResult) return;
