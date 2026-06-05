@@ -529,51 +529,88 @@ function downloadBusinessTemplate() {
   exportCSV("business-upload-template.csv", rows);
 }
 
-function uploadBusinessCsv(event) {
+async function uploadBusinessCsv(event) {
   const file = event.target.files?.[0];
 
   if (!file) return;
 
   const reader = new FileReader();
 
-  reader.onload = () => {
+  reader.onload = async () => {
     const text = reader.result;
 
     const lines = text.split(/\r?\n/).filter(Boolean);
-
     const rows = lines.slice(1);
 
-    rows.forEach((line) => {
-      const [name, type, address] = line
-        .split(",")
-        .map((item) => item?.trim());
+    const campaignResult = await supabaseClient
+      .from("campaigns")
+      .select("id")
+      .eq("slug", CAMPAIGN.slug)
+      .single();
 
-      if (!name || !type || !address) return;
+    if (campaignResult.error || !campaignResult.data) {
+      console.error("Campaign lookup failed:", campaignResult.error);
+      alert("Could not find this campaign in Supabase.");
+      return;
+    }
 
-      const id = businessIdFromName(name);
+    const campaignId = campaignResult.data.id;
 
-      if (!businesses.some((business) => business.id === id)) {
-        businesses.push({
-          id,
+    const newBusinesses = rows
+      .map((line) => {
+        const [name, type, address] = line
+          .split(",")
+          .map((item) => item?.trim());
+
+        if (!name || !type || !address) return null;
+
+        return {
+          campaign_id: campaignId,
+          slug: businessIdFromName(name),
           name,
           type,
           address,
           lat: 51.023,
           lng: -114.112,
-        });
+          is_active: true,
+        };
+      })
+      .filter(Boolean);
 
-        selectedBusinessIds.push(id);
-      }
-    });
+    if (!newBusinesses.length) {
+      alert("No valid businesses found in the CSV.");
+      return;
+    }
 
-    selectedBusinessIds = [...new Set(selectedBusinessIds)];
+    const { data, error } = await supabaseClient
+      .from("businesses")
+      .upsert(newBusinesses, {
+        onConflict: "campaign_id,slug",
+      })
+      .select();
 
-    saveBusinesses();
+    if (error) {
+      console.error("Business CSV upload failed:", error);
+      alert("Business upload failed. Check the browser console.");
+      return;
+    }
 
+    businesses = data.map((business) => ({
+      id: business.slug,
+      supabaseId: business.id,
+      name: business.name,
+      type: business.type,
+      address: business.address,
+      lat: Number(business.lat || 51.023),
+      lng: Number(business.lng || -114.112),
+    }));
+
+    selectedBusinessIds = businesses.map((business) => business.id);
     setJSON(STORAGE.selected, selectedBusinessIds);
 
     event.target.value = "";
 
+    alert(`${businesses.length} businesses uploaded to Supabase.`);
     renderAll();
   };
 
