@@ -528,7 +528,47 @@ function downloadBusinessTemplate() {
 
   exportCSV("business-upload-template.csv", rows);
 }
+async function loadBusinessesFromSupabase() {
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
 
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Campaign lookup failed:", campaignResult.error);
+    return;
+  }
+
+  const campaignId = campaignResult.data.id;
+
+  const { data, error } = await supabaseClient
+    .from("businesses")
+    .select("*")
+    .eq("campaign_id", campaignId)
+    .eq("is_active", true)
+    .order("name");
+
+  if (error) {
+    console.error("Business load failed:", error);
+    return;
+  }
+
+  businesses = data.map((business) => ({
+    id: business.slug,
+    supabaseId: business.id,
+    name: business.name,
+    type: business.type,
+    address: business.address,
+    lat: Number(business.lat || 51.023),
+    lng: Number(business.lng || -114.112),
+  }));
+
+  selectedBusinessIds = businesses.map((business) => business.id);
+  setJSON(STORAGE.selected, selectedBusinessIds);
+
+  renderAll();
+}
 async function uploadBusinessCsv(event) {
   const file = event.target.files?.[0];
 
@@ -1083,4 +1123,5 @@ function renderAll() {
 
 wireEvents();
 renderAll();
+loadBusinessesFromSupabase();
 handleUrlScan();
