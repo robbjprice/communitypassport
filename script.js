@@ -173,30 +173,69 @@ function requireParticipant(callback) {
   window.pendingAfterRegister = callback;
 }
 
-function registerParticipant() {
+async function registerParticipant() {
   const name = $("regName")?.value.trim();
   const email = $("regEmail")?.value.trim();
   const postal = $("regPostal")?.value.trim();
   const consentAccepted = document.getElementById("consentCheckbox").checked;
 
-if (!consentAccepted) {
-  alert("Please review and accept the participation consent to continue.");
-  return;
-}
+  if (!consentAccepted) {
+    alert("Please review and accept the participation consent to continue.");
+    return;
+  }
 
   if (!name || !email || !postal) {
     alert("Please enter your name, email, and postal code.");
     return;
   }
 
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Campaign lookup failed:", campaignResult.error);
+    alert("Could not find this campaign in Supabase.");
+    return;
+  }
+
+  const campaignId = campaignResult.data.id;
+
+  const { data, error } = await supabaseClient
+    .from("participants")
+    .upsert(
+      {
+        campaign_id: campaignId,
+        name,
+        email,
+        postal_code: postal,
+        consent_accepted: consentAccepted,
+        last_seen_at: new Date().toISOString(),
+      },
+      {
+        onConflict: "campaign_id,email",
+      }
+    )
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Participant registration failed:", error);
+    alert("Registration failed. Check the browser console.");
+    return;
+  }
+
   participant = {
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-    name,
-    email,
-    postalCode: postal,
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    postalCode: data.postal_code,
     campaign: CAMPAIGN.slug,
-    createdAt: new Date().toISOString(),
-    lastSeenAt: new Date().toISOString(),
+    campaignId: data.campaign_id,
+    createdAt: data.created_at,
+    lastSeenAt: data.last_seen_at,
   };
 
   setJSON(STORAGE.participant, participant);
@@ -211,47 +250,6 @@ if (!consentAccepted) {
 
   renderAll();
 }
-
-function collectStamp(businessId) {
-  const business = businesses.find((item) => item.id === businessId);
-
-  if (!business) {
-    setScanMessage("Business not found. Please check the QR code.", "error");
-    showTab("passport");
-    return;
-  }
-
-  requireParticipant(() => {
-    if (stampExists(businessId)) {
-      setScanMessage(`Already collected: ${business.name}`, "duplicate");
-    } else {
-      stamps.push({
-        campaign: CAMPAIGN.slug,
-        participantId: participant.id,
-        participantName: participant.name,
-        email: participant.email,
-        postalCode: participant.postalCode,
-        businessId,
-        businessName: business.name,
-        businessType: business.type,
-        scannedAt: new Date().toISOString(),
-        scanSource: "qr-or-demo",
-        userAgent: navigator.userAgent,
-      });
-
-      participant.lastSeenAt = new Date().toISOString();
-
-      setJSON(STORAGE.stamps, stamps);
-      setJSON(STORAGE.participant, participant);
-
-      setScanMessage(`Stamp collected at ${business.name}!`, "success");
-    }
-
-    showTab("passport");
-    renderAll();
-  });
-}
-
 function setScanMessage(message, status = "default") {
   const scanResult = $("scanResult");
   if (!scanResult) return;
