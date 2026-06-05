@@ -595,18 +595,7 @@ async function uploadBusinessCsv(event) {
       return;
     }
 
-    businesses = data.map((business) => ({
-      id: business.slug,
-      supabaseId: business.id,
-      name: business.name,
-      type: business.type,
-      address: business.address,
-      lat: Number(business.lat || 51.023),
-      lng: Number(business.lng || -114.112),
-    }));
-
-    selectedBusinessIds = businesses.map((business) => business.id);
-    setJSON(STORAGE.selected, selectedBusinessIds);
+    await loadBusinessesFromSupabase();
 
     event.target.value = "";
 
