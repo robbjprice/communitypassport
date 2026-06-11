@@ -1098,3 +1098,23 @@ main {
 .rp-footer a:hover {
   text-decoration: underline;
 }
+.footer-admin {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.footer-admin button,
+.footer-admin a {
+  font-size: 0.7rem;
+  color: #999;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.footer-admin button:hover,
+.footer-admin a:hover {
+  text-decoration: underline;
+}
