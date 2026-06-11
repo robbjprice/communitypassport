@@ -1118,3 +1118,6 @@ main {
 .footer-admin a:hover {
   text-decoration: underline;
 }
+.footer-logo-wrapper {
+  text-align: center;
+}
