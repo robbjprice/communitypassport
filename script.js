@@ -1178,7 +1178,7 @@ $("businessCsvUpload")?.addEventListener(
   $("exportDataBtn")?.addEventListener("click", exportDataCsv);
   $("sendEmailBtn")?.addEventListener("click", sendEmail);
 
-  $("adminButton")?.addEventListener("click", openAdminLogin);
+  $("footerAdminBtn")?.addEventListener("click", openAdminLogin);
   $("adminLoginBtn")?.addEventListener("click", adminLogin);
   $("adminCancelBtn")?.addEventListener("click", closeAdminLogin);
   $("adminLogoutBtn")?.addEventListener("click", adminLogout);
