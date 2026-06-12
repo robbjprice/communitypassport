@@ -672,7 +672,7 @@ async function uploadBusinessCsv(event) {
 
     const newBusinesses = rows
       .map((line) => {
-        const [name, type, address1, address2, city, province, postal, lat, lng] = line
+        const const [name, type, address1, address2, city, province, postal] = line
   .split(",")
   .map((item) => item?.trim());
 
@@ -694,8 +694,8 @@ const fullAddress = [
   name,
   type,
   address: fullAddress,
-  lat: lat ? Number(lat) : 51.023,
-  lng: lng ? Number(lng) : -114.112,
+  lat: 51.023,
+  lng: -114.112,
   is_active: true,
 };
       })
