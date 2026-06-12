@@ -358,14 +358,17 @@ console.log("SCANNED:", scannedBusinessId);
 console.log("RAW QR:", decodedText);
         if (scannedBusinessId !== expectedBusinessId) {
   await closeQrScanner();
+
+  alert("This QR code doesn't match this business.");
+
   setScanMessage(
     "This QR code doesn't match this business.",
     "error"
   );
+
   showTab("passport");
   return;
 }
-
        collectStamp(scannedBusinessId);
 
 setTimeout(() => {
