@@ -315,77 +315,76 @@ function mapUrlForBusiness(business) {
 function openBusinessMap(business) {
   window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
 }
-function openDemoCameraThenCollect(expectedBusinessId) {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
-  input.capture = "environment";
-  input.style.display = "none";
+let activeQrScanner = null;
 
-  document.body.appendChild(input);
+async function openDemoCameraThenCollect(expectedBusinessId) {
+  const modal = $("qrScannerModal");
+  const scannerBox = $("qrScanner");
 
-  input.addEventListener("change", () => {
-    const file = input.files?.[0];
+  if (!modal || !scannerBox) {
+    setScanMessage("Scanner is not available.", "error");
+    return;
+  }
 
-    if (!file) {
-      input.remove();
-      return;
+  modal.classList.remove("hidden");
+  scannerBox.innerHTML = "";
+
+  activeQrScanner = new Html5Qrcode("qrScanner");
+
+  try {
+    await activeQrScanner.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+      },
+      async (decodedText) => {
+        let scannedBusinessId = null;
+
+        try {
+          const url = new URL(decodedText);
+          const campaign = url.searchParams.get("campaign");
+          const business = url.searchParams.get("business");
+
+          if (campaign === CAMPAIGN.slug && business) {
+            scannedBusinessId = business;
+          }
+        } catch {
+          setScanMessage("That is not a valid Social Sundays QR code.", "error");
+          return;
+        }
+
+        if (scannedBusinessId !== expectedBusinessId) {
+          setScanMessage("That QR code does not match this business.", "error");
+          return;
+        }
+
+        await closeQrScanner();
+        collectStamp(scannedBusinessId);
+      }
+    );
+  } catch (error) {
+    console.error("QR scanner failed:", error);
+    setScanMessage("Could not open the camera. Try using your phone camera instead.", "error");
+    modal.classList.add("hidden");
+  }
+}
+
+async function closeQrScanner() {
+  const modal = $("qrScannerModal");
+
+  if (activeQrScanner) {
+    try {
+      await activeQrScanner.stop();
+      await activeQrScanner.clear();
+    } catch (error) {
+      console.warn("Scanner close warning:", error);
     }
 
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
+    activeQrScanner = null;
+  }
 
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      context.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
-
-      if (!qrCode || !qrCode.data) {
-        setScanMessage("No QR code found. Please scan the posted business QR code.", "error");
-        input.remove();
-        return;
-      }
-
-      let scannedBusinessId = null;
-
-      try {
-        const url = new URL(qrCode.data);
-        const campaign = url.searchParams.get("campaign");
-        const business = url.searchParams.get("business");
-
-        if (campaign === CAMPAIGN.slug && business) {
-          scannedBusinessId = business;
-        }
-      } catch {
-        setScanMessage("That QR code is not a valid Social Sundays QR code.", "error");
-        input.remove();
-        return;
-      }
-
-      if (scannedBusinessId !== expectedBusinessId) {
-        setScanMessage("That QR code does not match this business.", "error");
-        input.remove();
-        return;
-      }
-
-      collectStamp(scannedBusinessId);
-      input.remove();
-    };
-
-    img.onerror = () => {
-      setScanMessage("Could not read that image. Please try again.", "error");
-      input.remove();
-    };
-
-    img.src = URL.createObjectURL(file);
-  });
-
-  input.click();
+  if (modal) modal.classList.add("hidden");
 }
 function renderPassport() {
   const selected = selectedBusinesses();
