@@ -357,16 +357,13 @@ console.log("EXPECTED:", expectedBusinessId);
 console.log("SCANNED:", scannedBusinessId);
 console.log("RAW QR:", decodedText);
         if (scannedBusinessId !== expectedBusinessId) {
-  await closeQrScanner();
+  const scannerMessage = $("qrScannerMessage");
 
-  alert("This QR code doesn't match this business.");
+  if (scannerMessage) {
+    scannerMessage.textContent = "This QR code doesn't match this business.";
+    scannerMessage.dataset.status = "error";
+  }
 
-  setScanMessage(
-    "This QR code doesn't match this business.",
-    "error"
-  );
-
-  showTab("passport");
   return;
 }
        collectStamp(scannedBusinessId);
