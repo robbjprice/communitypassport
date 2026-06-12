@@ -315,7 +315,7 @@ function mapUrlForBusiness(business) {
 function openBusinessMap(business) {
   window.open(mapUrlForBusiness(business), "_blank", "noopener,noreferrer");
 }
-function openDemoCameraThenCollect(businessId) {
+function openDemoCameraThenCollect(expectedBusinessId) {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/*";
@@ -324,21 +324,66 @@ function openDemoCameraThenCollect(businessId) {
 
   document.body.appendChild(input);
 
-  let collected = false;
+  input.addEventListener("change", () => {
+    const file = input.files?.[0];
 
-  function finishDemoScan() {
-    if (collected) return;
-    collected = true;
-
-    setTimeout(() => {
-      collectStamp(businessId);
+    if (!file) {
       input.remove();
-    }, 400);
-  }
+      return;
+    }
 
-  input.addEventListener("change", finishDemoScan);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
 
-  window.addEventListener("focus", finishDemoScan, { once: true });
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (!qrCode || !qrCode.data) {
+        setScanMessage("No QR code found. Please scan the posted business QR code.", "error");
+        input.remove();
+        return;
+      }
+
+      let scannedBusinessId = null;
+
+      try {
+        const url = new URL(qrCode.data);
+        const campaign = url.searchParams.get("campaign");
+        const business = url.searchParams.get("business");
+
+        if (campaign === CAMPAIGN.slug && business) {
+          scannedBusinessId = business;
+        }
+      } catch {
+        setScanMessage("That QR code is not a valid Social Sundays QR code.", "error");
+        input.remove();
+        return;
+      }
+
+      if (scannedBusinessId !== expectedBusinessId) {
+        setScanMessage("That QR code does not match this business.", "error");
+        input.remove();
+        return;
+      }
+
+      collectStamp(scannedBusinessId);
+      input.remove();
+    };
+
+    img.onerror = () => {
+      setScanMessage("Could not read that image. Please try again.", "error");
+      input.remove();
+    };
+
+    img.src = URL.createObjectURL(file);
+  });
 
   input.click();
 }
