@@ -1335,6 +1335,7 @@ function wireEvents() {
   });
 
   $("registerBtn")?.addEventListener("click", registerParticipant);
+  $("closeScannerBtn")?.addEventListener("click", closeQrScanner);
   $("resetParticipantBtn")?.addEventListener("click", resetDemo);
 
   $("businessSearch")?.addEventListener("input", renderBusinessDirectory);
