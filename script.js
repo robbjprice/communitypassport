@@ -672,7 +672,7 @@ async function uploadBusinessCsv(event) {
 
     const newBusinesses = rows
       .map((line) => {
-        const const [name, type, address1, address2, city, province, postal] = line
+        const [name, type, address1, address2, city, province, postal] = line
   .split(",")
   .map((item) => item?.trim());
 
