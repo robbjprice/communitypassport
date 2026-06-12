@@ -691,6 +691,41 @@ const fullAddress = [
 
   reader.readAsText(file);
 }
+async function updateAdminTotals() {
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Admin totals campaign lookup failed:", campaignResult.error);
+    return;
+  }
+
+  const campaignId = campaignResult.data.id;
+
+  const participantsResult = await supabaseClient
+    .from("participants")
+    .select("id", { count: "exact", head: true })
+    .eq("campaign_id", campaignId);
+
+  const stampsResult = await supabaseClient
+    .from("stamps")
+    .select("id", { count: "exact", head: true })
+    .eq("campaign_id", campaignId);
+
+  if (participantsResult.error || stampsResult.error) {
+    console.error("Admin totals load failed:", {
+      participantsError: participantsResult.error,
+      stampsError: stampsResult.error,
+    });
+    return;
+  }
+
+  if ($("participantCount")) $("participantCount").textContent = participantsResult.count || 0;
+  if ($("stampCount")) $("stampCount").textContent = stampsResult.count || 0;
+}
 function renderAdmin() {
   const adminPage = $("admin");
 
@@ -700,8 +735,7 @@ function renderAdmin() {
 
   if ($("directoryCount")) $("directoryCount").textContent = businesses.length;
   if ($("selectedCount")) $("selectedCount").textContent = selectedBusinessIds.length;
-  if ($("participantCount")) $("participantCount").textContent = participant ? 1 : 0;
-  if ($("stampCount")) $("stampCount").textContent = stampsForCampaign().length;
+  updateAdminTotals();
 
   renderBusinessDirectory();
 
