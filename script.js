@@ -107,10 +107,31 @@ const postalAreas = {
   T2P: "Downtown Calgary",
 };
 const rewardTiers = [
-  { count: 1, title: "Weekly Prize Entry", description: "Collect 1 stamp to earn a weekly prize entry." },
-  { count: 3, title: "Bonus Prize Entry", description: "Collect 3 stamps to unlock an extra prize entry." },
-  { count: 5, title: "Grand Prize Entry", description: "Collect 5 stamps to qualify for the grand prize draw." },
-  { count: "all", title: "$1,000 Marda Loop Shopping Spree", description: "Complete your full passport to qualify for the $1,000 Marda Loop shopping spree." },
+  {
+    count: 1,
+    title: "Social Starter",
+    description: "Weekly prizes. Every stamp collected earns an entry into the weekly prize draws."
+  },
+  {
+    count: 6,
+    title: "Patio Hopper",
+    description: "Collect 6+ stamps to qualify for a $100 Marda Loop Gift Card draw."
+  },
+  {
+    count: 10,
+    title: "Patio Pro",
+    description: "Collect 10+ stamps to qualify for a $250 Marda Loop Gift Card draw."
+  },
+  {
+    count: 15,
+    title: "Summer Socialite",
+    description: "Collect 15+ stamps to qualify for a $500 Marda Loop Gift Card draw."
+  },
+  {
+    count: "all",
+    title: "Mayor of Marda Loop",
+    description: "Complete your entire passport to be entered to win a $1,000 Marda Loop Shopping Spree."
+  }
 ];
 
 let participant = getJSON(STORAGE.participant, null);
