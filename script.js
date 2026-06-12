@@ -808,39 +808,71 @@ async function renderPrizeQualifications() {
   });
 }
 
-function renderPostalHeatMap() {
+async function renderPostalHeatMap() {
   const container = $("postalHeatMap");
   if (!container) return;
 
+  container.innerHTML = `<p class="muted">Loading postal code heat map...</p>`;
+
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    container.innerHTML = `<p class="muted">Could not load campaign.</p>`;
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("participants")
+    .select("postal_code")
+    .eq("campaign_id", campaignResult.data.id);
+
+  if (error) {
+    console.error("Postal heat map load failed:", error);
+    container.innerHTML = `<p class="muted">Could not load postal codes.</p>`;
+    return;
+  }
+
   const counts = {};
 
-  demoParticipants.forEach((person) => {
-    const prefix = person.postalCode.split(" ")[0].toUpperCase();
+  data.forEach((person) => {
+    const postal = (person.postal_code || "").trim().toUpperCase();
+    if (!postal) return;
+
+    const prefix = postal.split(" ")[0];
     counts[prefix] = (counts[prefix] || 0) + 1;
   });
 
   const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  if (!entries.length) {
+    container.innerHTML = `<p class="muted">No participant postal codes yet.</p>`;
+    return;
+  }
+
   const max = Math.max(...entries.map((entry) => entry[1]), 1);
 
   container.innerHTML = entries.map(([prefix, count]) => {
     const width = Math.round((count / max) * 100);
-
     const area = postalAreas[prefix] || "Calgary / surrounding area";
 
-return `
-  <div class="postal-row">
-    <div>
-      <div class="postal-prefix">${prefix}</div>
-      <div class="postal-area">${area}</div>
-    </div>
+    return `
+      <div class="postal-row">
+        <div>
+          <div class="postal-prefix">${prefix}</div>
+          <div class="postal-area">${area}</div>
+        </div>
 
-    <div class="postal-bar-track">
-      <div class="postal-bar-fill" style="width: ${width}%"></div>
-    </div>
+        <div class="postal-bar-track">
+          <div class="postal-bar-fill" style="width: ${width}%"></div>
+        </div>
 
-    <div class="postal-count">${count}</div>
-  </div>
-`;
+        <div class="postal-count">${count}</div>
+      </div>
+    `;
   }).join("");
 }
 function renderBusinessDirectory() {
