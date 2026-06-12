@@ -672,22 +672,32 @@ async function uploadBusinessCsv(event) {
 
     const newBusinesses = rows
       .map((line) => {
-        const [name, type, address] = line
-          .split(",")
-          .map((item) => item?.trim());
+        const [name, type, address1, address2, city, province, postal, lat, lng] = line
+  .split(",")
+  .map((item) => item?.trim());
 
-        if (!name || !type || !address) return null;
+if (!name || !type || !address1) return null;
+
+const fullAddress = [
+  address1,
+  address2,
+  city,
+  province,
+  postal
+]
+  .filter(Boolean)
+  .join(", ");
 
         return {
-          campaign_id: campaignId,
-          slug: businessIdFromName(name),
-          name,
-          type,
-          address,
-          lat: 51.023,
-          lng: -114.112,
-          is_active: true,
-        };
+  campaign_id: campaignId,
+  slug: businessIdFromName(name),
+  name,
+  type,
+  address: fullAddress,
+  lat: lat ? Number(lat) : 51.023,
+  lng: lng ? Number(lng) : -114.112,
+  is_active: true,
+};
       })
       .filter(Boolean);
 
