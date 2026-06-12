@@ -723,16 +723,23 @@ function renderPrizeQualifications() {
   if (!container) return;
 
   const tiers = [
-    { title: "Weekly Prize Entry", needed: 1 },
-    { title: "Bonus Prize Entry", needed: 3 },
-    { title: "Grand Prize Entry", needed: 5 },
-    { title: "$1,000 Marda Loop Shopping Spree", needed: selectedBusinessIds.length },
-  ];
-
+  { title: "Social Starter", needed: 1 },
+  { title: "Patio Hopper", needed: 6 },
+  { title: "Patio Pro", needed: 10 },
+  { title: "Summer Socialite", needed: 15 },
+  { title: "Mayor of Marda Loop", needed: selectedBusinessIds.length }
+];
   container.innerHTML = "";
 
   tiers.forEach((tier) => {
-    const qualified = demoParticipants.filter((person) => person.stamps >= tier.needed);
+    const qualified = participant
+  ? [{
+      name: participant.name || "Participant",
+      email: participant.email || "",
+      postalCode: participant.postalCode || participant.postal_code || "",
+      stamps: stampsForCampaign().length
+    }].filter((person) => person.stamps >= tier.needed)
+  : [];
 
     const block = document.createElement("div");
     block.className = "qualification-tier";
