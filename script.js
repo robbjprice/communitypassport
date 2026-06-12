@@ -718,28 +718,73 @@ renderPrizeQualifications();
 renderPostalHeatMap();
 
 }
-function renderPrizeQualifications() {
+async function renderPrizeQualifications() {
   const container = $("prizeQualificationList");
   if (!container) return;
 
+  container.innerHTML = `<p class="muted">Loading prize qualifications...</p>`;
+
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Campaign lookup failed:", campaignResult.error);
+    container.innerHTML = `<p class="muted">Could not load campaign.</p>`;
+    return;
+  }
+
+  const campaignId = campaignResult.data.id;
+
+  const participantsResult = await supabaseClient
+    .from("participants")
+    .select("id, name, email, postal_code")
+    .eq("campaign_id", campaignId);
+
+  const stampsResult = await supabaseClient
+    .from("stamps")
+    .select("participant_id")
+    .eq("campaign_id", campaignId);
+
+  if (participantsResult.error || stampsResult.error) {
+    console.error("Prize qualification load failed:", {
+      participantsError: participantsResult.error,
+      stampsError: stampsResult.error,
+    });
+
+    container.innerHTML = `<p class="muted">Could not load prize qualifications.</p>`;
+    return;
+  }
+
+  const stampCounts = {};
+
+  stampsResult.data.forEach((stamp) => {
+    stampCounts[stamp.participant_id] = (stampCounts[stamp.participant_id] || 0) + 1;
+  });
+
+  const people = participantsResult.data.map((person) => ({
+    name: person.name || "Participant",
+    email: person.email || "",
+    postalCode: person.postal_code || "",
+    stamps: stampCounts[person.id] || 0,
+  }));
+
   const tiers = [
-  { title: "Social Starter", needed: 1 },
-  { title: "Patio Hopper", needed: 6 },
-  { title: "Patio Pro", needed: 10 },
-  { title: "Summer Socialite", needed: 15 },
-  { title: "Mayor of Marda Loop", needed: selectedBusinessIds.length }
-];
+    { title: "Social Starter", needed: 1 },
+    { title: "Patio Hopper", needed: 6 },
+    { title: "Patio Pro", needed: 10 },
+    { title: "Summer Socialite", needed: 15 },
+    { title: "Mayor of Marda Loop", needed: selectedBusinessIds.length },
+  ];
+
   container.innerHTML = "";
 
   tiers.forEach((tier) => {
-    const qualified = participant
-  ? [{
-      name: participant.name || "Participant",
-      email: participant.email || "",
-      postalCode: participant.postalCode || participant.postal_code || "",
-      stamps: stampsForCampaign().length
-    }].filter((person) => person.stamps >= tier.needed)
-  : [];
+    const qualified = people
+      .filter((person) => person.stamps >= tier.needed)
+      .sort((a, b) => b.stamps - a.stamps);
 
     const block = document.createElement("div");
     block.className = "qualification-tier";
