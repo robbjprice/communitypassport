@@ -1082,17 +1082,70 @@ function exportQrCsv() {
   exportCSV("social-sundays-qr-urls.csv", rows);
 }
 
-function exportDataCsv() {
+async function exportDataCsv() {
   const rows = [["Participant", "Email", "Postal Code", "Business", "Business Type", "Scanned At"]];
 
-  stampsForCampaign().forEach((stamp) => {
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Campaign lookup failed:", campaignResult.error);
+    alert("Could not load campaign for export.");
+    return;
+  }
+
+  const campaignId = campaignResult.data.id;
+
+  const participantsResult = await supabaseClient
+    .from("participants")
+    .select("id, name, email, postal_code")
+    .eq("campaign_id", campaignId);
+
+  const stampsResult = await supabaseClient
+    .from("stamps")
+    .select("participant_id, business_id, scanned_at")
+    .eq("campaign_id", campaignId);
+
+  const businessesResult = await supabaseClient
+    .from("businesses")
+    .select("id, name, type")
+    .eq("campaign_id", campaignId);
+
+  if (participantsResult.error || stampsResult.error || businessesResult.error) {
+    console.error("Export failed:", {
+      participantsError: participantsResult.error,
+      stampsError: stampsResult.error,
+      businessesError: businessesResult.error,
+    });
+
+    alert("Export failed. Check the browser console.");
+    return;
+  }
+
+  const participantsById = {};
+  participantsResult.data.forEach((person) => {
+    participantsById[person.id] = person;
+  });
+
+  const businessesById = {};
+  businessesResult.data.forEach((business) => {
+    businessesById[business.id] = business;
+  });
+
+  stampsResult.data.forEach((stamp) => {
+    const person = participantsById[stamp.participant_id];
+    const business = businessesById[stamp.business_id];
+
     rows.push([
-      stamp.participantName,
-      stamp.email,
-      stamp.postalCode,
-      stamp.businessName,
-      stamp.businessType || "",
-      stamp.scannedAt,
+      person?.name || "",
+      person?.email || "",
+      person?.postal_code || "",
+      business?.name || "",
+      business?.type || "",
+      stamp.scanned_at || "",
     ]);
   });
 
