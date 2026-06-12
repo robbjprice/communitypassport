@@ -26,6 +26,7 @@ const STORAGE = {
   emails: "communityPassportEmailHistory",
   admins: "communityPassportAdminUsers",
   adminLoggedIn: "communityPassportAdminLoggedIn",
+  rewardPopups: "communityPassportRewardPopups",
 };
 
 let businesses = [];
@@ -81,6 +82,7 @@ let adminUsers = getJSON(STORAGE.admins, [
   { name: "Robb Price", email: "admin@theloopsocial.ca", role: "master" },
 ]);
 let adminLoggedIn = getJSON(STORAGE.adminLoggedIn, false);
+let rewardPopups = getJSON(STORAGE.rewardPopups, []);
 
 function $(id) {
   return document.getElementById(id);
@@ -210,6 +212,33 @@ async function registerParticipant() {
 
   renderAll();
 }
+function checkRewardPopup() {
+  const selected = selectedBusinesses();
+
+  const collected = stampsForCampaign().filter((stamp) =>
+    selectedBusinessIds.includes(stamp.businessId)
+  );
+
+  const count = collected.length;
+
+  const unlockedTier = rewardTiers.find((tier) => {
+    const needed = tier.count === "all" ? selected.length : tier.count;
+
+    return (
+      count >= needed &&
+      !rewardPopups.includes(tier.title)
+    );
+  });
+
+  if (!unlockedTier) return;
+
+  rewardPopups.push(unlockedTier.title);
+  setJSON(STORAGE.rewardPopups, rewardPopups);
+
+  alert(
+    `Congratulations! You're a ${unlockedTier.title}.\n\nYou've been entered into the draw!`
+  );
+}
 async function collectStamp(businessId) {
   const business = businesses.find((item) => item.id === businessId);
 
@@ -275,6 +304,7 @@ async function collectStamp(businessId) {
 
       setJSON(STORAGE.stamps, stamps);
       setScanMessage(`Stamp collected at ${business.name}!`, "success");
+      checkRewardPopup();
     } else {
       setScanMessage(`Already collected: ${business.name}`, "duplicate");
     }
