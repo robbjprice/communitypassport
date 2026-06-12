@@ -31,20 +31,7 @@ const STORAGE = {
 let businesses = [];
 
 const defaultSelected = [];
-const demoParticipants = [
-  { name: "Ava Chen", email: "ava@example.com", postalCode: "T2T 1A1", stamps: 6 },
-  { name: "Liam Johnson", email: "liam@example.com", postalCode: "T2T 2B2", stamps: 5 },
-  { name: "Sofia Patel", email: "sofia@example.com", postalCode: "T3E 1C3", stamps: 4 },
-  { name: "Noah Williams", email: "noah@example.com", postalCode: "T2V 3K4", stamps: 3 },
-  { name: "Mia Brown", email: "mia@example.com", postalCode: "T2N 4P8", stamps: 2 },
-  { name: "Ethan Lee", email: "ethan@example.com", postalCode: "T3H 5L2", stamps: 1 },
-  { name: "Olivia Martin", email: "olivia@example.com", postalCode: "T4B 0A2", stamps: 5 },
-  { name: "Lucas Wilson", email: "lucas@example.com", postalCode: "T4C 1M2", stamps: 3 },
-  { name: "Emma Garcia", email: "emma@example.com", postalCode: "T1S 1A4", stamps: 6 },
-  { name: "Jack Thompson", email: "jack@example.com", postalCode: "T0M 0W0", stamps: 2 },
-  { name: "Harper Scott", email: "harper@example.com", postalCode: "T2G 0A1", stamps: 4 },
-  { name: "Benjamin Clark", email: "ben@example.com", postalCode: "T2P 3N4", stamps: 1 },
-];
+const demoParticipants = [];
 const postalAreas = {
   T2T: "Marda Loop / Altadore / South Calgary",
   T3E: "Glendale / Westgate / Signal Hill area",
