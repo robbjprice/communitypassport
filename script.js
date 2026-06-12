@@ -366,8 +366,11 @@ console.log("RAW QR:", decodedText);
   return;
 }
 
-       await collectStamp(scannedBusinessId);
-await closeQrScanner();
+       collectStamp(scannedBusinessId);
+
+setTimeout(() => {
+  closeQrScanner();
+}, 800);
       }
     );
   } catch (error) {
