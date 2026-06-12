@@ -1219,7 +1219,11 @@ function renderAll() {
   renderAdmin();
 }
 
-wireEvents();
-renderAll();
-loadBusinessesFromSupabase();
-handleUrlScan();
+async function initApp() {
+  wireEvents();
+  renderAll();
+  await loadBusinessesFromSupabase();
+  handleUrlScan();
+}
+
+initApp();
