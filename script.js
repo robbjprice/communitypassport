@@ -594,11 +594,11 @@ function addBusiness() {
   renderAll();
 }
 function downloadBusinessTemplate() {
-  const rows = [
-    ["name", "type", "address"],
-    ["Example Cafe", "Coffee", "1234 33 Avenue SW"],
-    ["Example Boutique", "Retail", "Marda Loop"],
-  ];
+const rows = [
+  ["name", "type", "address1", "address2", "city", "province", "postal", "lat", "lng"],
+  ["Example Cafe", "Coffee", "1234 33 Avenue SW", "", "Calgary", "AB", "T2T 1A1", "51.023", "-114.112"],
+  ["Example Boutique", "Retail", "2000 33 Avenue SW", "Unit 4", "Calgary", "AB", "T2T 1B2", "51.024", "-114.113"],
+];
 
   exportCSV("business-upload-template.csv", rows);
 }
