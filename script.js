@@ -357,9 +357,14 @@ console.log("EXPECTED:", expectedBusinessId);
 console.log("SCANNED:", scannedBusinessId);
 console.log("RAW QR:", decodedText);
         if (scannedBusinessId !== expectedBusinessId) {
-          setScanMessage("That QR code does not match this business.", "error");
-          return;
-        }
+  await closeQrScanner();
+  setScanMessage(
+    "This QR code doesn't match this business.",
+    "error"
+  );
+  showTab("passport");
+  return;
+}
 
        await collectStamp(scannedBusinessId);
 await closeQrScanner();
