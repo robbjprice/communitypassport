@@ -572,7 +572,7 @@ function saveBusinesses() {
   setJSON("communityPassportBusinesses", businesses);
 }
 
-function addBusiness() {
+async function addBusiness() {
   const name = $("newBusinessName")?.value.trim();
   const type = $("newBusinessType")?.value.trim();
 
@@ -597,35 +597,45 @@ function addBusiness() {
     .filter(Boolean)
     .join(", ");
 
-  const id = businessIdFromName(name);
+  const slug = businessIdFromName(name);
 
-  if (businesses.some((business) => business.id === id)) {
-    alert("That business already exists.");
+  const campaignResult = await supabaseClient
+    .from("campaigns")
+    .select("id")
+    .eq("slug", CAMPAIGN.slug)
+    .single();
+
+  if (campaignResult.error || !campaignResult.data) {
+    console.error("Campaign lookup failed:", campaignResult.error);
+    alert("Could not find this campaign in Supabase.");
     return;
   }
 
-  businesses.push({
-    id,
-    name,
-    type,
-    address: fullAddress,
+  const campaignId = campaignResult.data.id;
 
-    address1,
-    address2,
-    city,
-    province,
-    postal,
+  const { error } = await supabaseClient
+    .from("businesses")
+    .upsert(
+      {
+        campaign_id: campaignId,
+        slug,
+        name,
+        type,
+        address: fullAddress,
+        lat: 51.023,
+        lng: -114.112,
+        is_active: true,
+      },
+      {
+        onConflict: "campaign_id,slug",
+      }
+    );
 
-    lat: 51.023,
-    lng: -114.112,
-  });
-
-  selectedBusinessIds.push(id);
-  selectedBusinessIds = [...new Set(selectedBusinessIds)];
-
-  saveBusinesses();
-
-  setJSON(STORAGE.selected, selectedBusinessIds);
+  if (error) {
+    console.error("Manual business add failed:", error);
+    alert("Business could not be saved. Check the browser console.");
+    return;
+  }
 
   $("newBusinessName").value = "";
   $("newBusinessType").value = "";
@@ -635,7 +645,11 @@ function addBusiness() {
   $("newBusinessProvince").value = "AB";
   $("newBusinessPostal").value = "";
 
+  await loadBusinessesFromSupabase();
+
   renderAll();
+
+  alert(`${name} has been added.`);
 }
 function downloadBusinessTemplate() {
 const rows = [
