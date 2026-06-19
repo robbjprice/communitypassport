@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://lpdatofxeivydxmjtbwg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_qhLcavWW3O0DLs4w22N9Sw_9JoEjHt2";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const successSound = new Audio("success.mp3");
 async function testSupabaseConnection() {
   const { data, error } = await supabaseClient
     .from("campaigns")
@@ -303,8 +304,12 @@ async function collectStamp(businessId) {
       });
 
       setJSON(STORAGE.stamps, stamps);
-      setScanMessage(`Stamp collected at ${business.name}!`, "success");
-      checkRewardPopup();
+     setScanMessage(`Stamp collected at ${business.name}!`, "success");
+
+successSound.currentTime = 0;
+successSound.play().catch(() => {});
+
+checkRewardPopup();
     } else {
       setScanMessage(`Already collected: ${business.name}`, "duplicate");
     }
@@ -503,6 +508,13 @@ function renderPassport() {
       const scanButton = stampCard.querySelector(".pending-status");
 scanButton?.addEventListener("click", (event) => {
   event.stopPropagation();
+
+  successSound.load();
+  successSound.play().then(() => {
+    successSound.pause();
+    successSound.currentTime = 0;
+  }).catch(() => {});
+
   openDemoCameraThenCollect(business.id);
 });
 
