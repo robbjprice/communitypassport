@@ -388,9 +388,6 @@ async function openDemoCameraThenCollect(expectedBusinessId) {
           setScanMessage("That is not a valid Social Sundays QR code.", "error");
           return;
         }
-console.log("EXPECTED:", expectedBusinessId);
-console.log("SCANNED:", scannedBusinessId);
-console.log("RAW QR:", decodedText);
         if (scannedBusinessId !== expectedBusinessId) {
   const scannerMessage = $("qrScannerMessage");
 
