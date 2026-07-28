@@ -8,7 +8,7 @@ const CAMPAIGN = {
   slug: "social-sundays",
   title: "Social Sundays",
   community: "Marda Loop",
-  date: "June 2026",
+  date: "Through September 30, 2026",
 };
 
 const STORAGE = {
